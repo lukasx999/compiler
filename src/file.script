@@ -1,19 +1,8 @@
-defun foo(a'void) -> void { ret; }
+defun main() -> int {
 
+    let bar'int;
+    bar = 10;
+    let foo'int = 45;
 
-defun max(one'int, two'int) -> int {
-    if one > two {
-        ret one;
-    }
-    else {
-        ret two;
-    }
-}
-
-defun sum(a'int, b'int) -> int {
-    ret a + b;
-}
-
-defun main(argc'int, argv'str) -> int {
-    ret 0;
+    ret foo+bar;
 }

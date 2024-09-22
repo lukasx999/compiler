@@ -11,10 +11,7 @@
 
 
 
-
-
-static void _rec_print_ast(AstNode *root, uint32_t level)
-{
+static void _rec_print_ast(AstNode *root, uint32_t level) {
 
     if (root == NULL) return;
 
@@ -33,20 +30,19 @@ static void _rec_print_ast(AstNode *root, uint32_t level)
     // groupings:  yellow
     // blocks:     yellow
 
+
+
     switch (root->type)
     {
         case TYPE_BINARYOP: {
-            printf("%s%s%s\n", COLOR_RED, token_repr[root->ast_binaryop.operator.type], COLOR_END);
-            AstNode *left = root->ast_binaryop.left_node;
-            AstNode *right = root->ast_binaryop.right_node;
-            _rec_print_ast(left, ++level);
-            _rec_print_ast(right, level);
+            PRINT_COLOR(COLOR_RED, token_repr[root->ast_binaryop.operator.type]);
+            _rec_print_ast(root->ast_binaryop.left_node, ++level);
+            _rec_print_ast(root->ast_binaryop.right_node, level);
         } break;
 
         case TYPE_UNARYOP: {
-            printf("%s%s%s\n", COLOR_PURPLE, token_repr[root->ast_unaryop.operator.type], COLOR_END);
-            AstNode *node = root->ast_unaryop.node;
-            _rec_print_ast(node, ++level);
+            PRINT_COLOR(COLOR_PURPLE, token_repr[root->ast_unaryop.operator.type]);
+            _rec_print_ast(root->ast_unaryop.node, ++level);
         } break;
 
         case TYPE_LITERAL: {
@@ -62,33 +58,25 @@ static void _rec_print_ast(AstNode *root, uint32_t level)
 
 
         case TYPE_GROUPING: {
-            printf("%s%s%s\n", COLOR_YELLOW, "grouping", COLOR_END);
-            AstNode *node = root->ast_grouping.node;
-            _rec_print_ast(node, ++level);
+            PRINT_COLOR(COLOR_YELLOW, "grouping");
+            _rec_print_ast(root->ast_grouping.node, ++level);
         } break;
 
 
         case TYPE_VARDECLARATION: {
             printf("%s%svardecl: `%s` of `%s`%s\n", COLOR_BLUE, COLOR_BOLD, root->ast_vardecl.idtypepair->ast_idtypepair.identifier.value, token_repr[root->ast_vardecl.idtypepair->ast_idtypepair.type.type], COLOR_END);
-            AstNode *node = root->ast_vardecl.value;
-            _rec_print_ast(node, ++level);
+            _rec_print_ast(root->ast_vardecl.value, ++level);
         } break;
 
         case TYPE_IF: {
-            printf("%s%s%s%s\n", COLOR_BLUE, COLOR_BOLD, "if", COLOR_END);
-
-            AstNode *node = root->ast_if.condition;
-            _rec_print_ast(node, ++level);
-
-            node = root->ast_if.if_body;
-            _rec_print_ast(node, level);
-
-            node = root->ast_if.else_body;
-            _rec_print_ast(node, level);
+            PRINT_COLOR(COLOR_BLUE, "if");
+            _rec_print_ast(root->ast_if.condition, ++level);
+            _rec_print_ast(root->ast_if.if_body,     level);
+            _rec_print_ast(root->ast_if.else_body,   level);
         } break;
 
         case TYPE_FUNCTION: {
-            printf("%s%sfunction `%s` returns `%s`%s\n", COLOR_BLUE, COLOR_BOLD, root->ast_function.identifier.value, token_repr[root->ast_function.returntype.type], COLOR_END);
+            printf("%s%sfunction `%s` -> `%s`%s\n", COLOR_BLUE, COLOR_BOLD, root->ast_function.identifier.value, token_repr[root->ast_function.returntype.type], COLOR_END);
 
             size_t size = root->ast_function.arguments.size;
 
@@ -104,14 +92,12 @@ static void _rec_print_ast(AstNode *root, uint32_t level)
 
         case TYPE_RETURN: {
             printf("%s%sreturn%s\n", COLOR_BLUE, COLOR_BOLD, COLOR_END);
-            AstNode *node = root->ast_return.expression;
-            _rec_print_ast(node, ++level);
+            _rec_print_ast(root->ast_return.expression, ++level);
         } break;
 
         case TYPE_ASSIGN: {
             printf("%s%sassign: `%s`%s\n", COLOR_BLUE, COLOR_BOLD, root->ast_assign.identifier.value, COLOR_END);
-            AstNode *node = root->ast_assign.value;
-            _rec_print_ast(node, ++level);
+            _rec_print_ast(root->ast_assign.value, ++level);
         } break;
 
         case TYPE_PROGRAMROOT: {
@@ -154,22 +140,19 @@ static void _rec_print_ast(AstNode *root, uint32_t level)
 }
 
 
-void print_ast(AstNode *root)
-{
+void print_ast(AstNode *root) {
     puts("\n\n\n=== AST: ===\n");
     _rec_print_ast(root, 0);
     puts("\n-----------\n");
 }
 
 
-void print_input(const char *input)
-{
+void print_input(const char *input) {
     printf("\n=== INPUT: ===\n\n%s%s%s\n\n--------------", COLOR_CYAN, input, COLOR_END);
 }
 
 
-void print_tokens(TokenList tokens)
-{
+void print_tokens_columns(TokenList tokens) {
 
     puts("\n\n\n=== TOKENS: ===\n");
 
@@ -203,5 +186,30 @@ void print_tokens(TokenList tokens)
     }
 
     puts("\n== -------------------------- ==\n\n");
+
+}
+
+void print_tokens_stream(TokenList tokens) {
+
+    puts("\n\n\n=== TOKENS: ===\n");
+
+    for (size_t i=0; i<tokens.size; ++i) {
+        enum TokenType type = tokens.tokens[i].type;
+        char *value = tokens.tokens[i].value;
+
+        printf("(%s%s%s", COLOR_CYAN, token_repr[type], COLOR_END);
+
+        const char *quotes = "";
+        if (type == TOK_LITERAL_STRING)
+            quotes = "\"";
+
+        if (strcmp(value, ""))
+            printf(": %s%s%s%s%s) ", COLOR_RED, quotes, value, quotes, COLOR_END);
+        else
+            printf(") ");
+
+    }
+
+    puts("\n\n== -------------------------- ==\n\n");
 
 }

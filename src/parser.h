@@ -166,7 +166,8 @@ typedef struct {
 
 
 
-extern Token get_current_token(Parser *p);
+extern Token parser_get_current_token(Parser *p);
+extern void parser_synchronize(Parser *p);
 extern AstNode* parse(TokenList tokens, const char *filename); // returns NULL when there are no tokens to be parsed
 
 

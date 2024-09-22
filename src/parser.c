@@ -22,7 +22,7 @@
                                                                \
     while (match_tokentypes(p, __VA_ARGS__, MATCH_SENTINEL)) { \
                                                                \
-        Token operator = get_current_token(p);                 \
+        Token operator = parser_get_current_token(p);          \
         ++p->current;                                          \
                                                                \
         AstNode *right = callback(p);                          \
@@ -41,7 +41,8 @@
 
 
 
-#define PRINT_ERROR() fprintf(stderr, "%s%sERROR: %s", COLOR_RED, COLOR_BOLD, COLOR_END);
+#define PRINT_ERROR()         fprintf(stderr, "%s%sERROR: %s", COLOR_RED, COLOR_BOLD, COLOR_END);
+#define PRINT_ERRORPOSITION() fprintf(stderr, "%s:%lu:%lu: ", p->filename, current.line_number, current.column);
 
 void parser_throw_customerror(const char *message) {
     PRINT_ERROR();
@@ -53,7 +54,7 @@ void parser_throw_customerror(const char *message) {
 void parser_throw_error(Parser *p, enum ErrorTypes type) {
     p->error = true;
 
-    Token current = get_current_token(p);
+    Token current = parser_get_current_token(p);
 
 
     switch (type) {
@@ -63,6 +64,14 @@ void parser_throw_error(Parser *p, enum ErrorTypes type) {
                 fprintf(stderr, "(repl): ERROR: invalid token `%s`\n", current.value);
             else
                 fprintf(stderr, "%s:%lu:%lu: ERROR: invalid token `%s`\n", p->filename, current.line_number, current.column, current.value);
+        } break;
+
+        case ERROR_EXPECTEDSEMICOLON: {
+            PRINT_ERROR();
+            PRINT_ERRORPOSITION();
+
+
+            fprintf(stderr, "expected semicolon after statement\n");
         } break;
 
         case ERROR_EMPTYGROUPING: {
@@ -85,10 +94,6 @@ void parser_throw_error(Parser *p, enum ErrorTypes type) {
             fprintf(stderr, "unexpected token: `%s`\n", token_repr[current.type]);
         } break;
 
-        case ERROR_EXPECTEDSEMICOLON: {
-            PRINT_ERROR();
-            fprintf(stderr, "expected semicolon after statement\n");
-        } break;
 
         default:
             assert(!"invalid error type");
@@ -107,37 +112,26 @@ void parser_throw_error(Parser *p, enum ErrorTypes type) {
 /* AST NODE LIST */
 
 void astnodelist_init(AstNodeList *a) {
-
     a->capacity = 5;
     a->size = 0;
     a->nodes = malloc(a->capacity * sizeof(AstNode*));
-
 }
 
-
 void astnodelist_append(AstNodeList *a, AstNode **new) {
-
     if (a->size+1 == a->capacity) {
         a->capacity *= 2;
         a->nodes = realloc(a->nodes, a->capacity * sizeof(AstNode*));
     }
-
     a->nodes[a->size++] = *new;
-
 }
 
 /* ------------- */
 
 
 
-
-
-
-
-
-
 // `operation` gets casted to corresponding type, according to `Node_type`
-AstNode* ast_create_node(enum AstNode_type type, void *operation) {
+AstNode*
+ast_create_node(enum AstNode_type type, void *operation) {
 
     AstNode *new = malloc(sizeof(AstNode));
 
@@ -165,6 +159,8 @@ AstNode* ast_create_node(enum AstNode_type type, void *operation) {
     return new;
 
 }
+
+
 
 // traverse the ast and free all nodes from the bottom up
 // TODO: complete this
@@ -213,8 +209,13 @@ void ast_free_nodes(AstNode *root) {
 //--------------------------------------------------------------------------------
 
 
-Token get_current_token(Parser *p) {
+Token parser_get_current_token(Parser *p) {
     return p->tokens.tokens[p->current];
+}
+
+void parser_synchronize(Parser *p) {
+    // TODO: this
+    // aka: jump to the next line
 }
 
 
@@ -222,7 +223,7 @@ Token get_current_token(Parser *p) {
 // this is a pure convience function
 bool match_tokentypes(Parser *p, ...) {
 
-    enum TokenType input = get_current_token(p).type;
+    enum TokenType input = parser_get_current_token(p).type;
 
     va_list args;
     va_start(args, p);
@@ -272,7 +273,7 @@ AstNode* rule_primary(Parser *p) {
 
         // check for matched paren
         // TODO: switch to match_tokentypes
-        if (get_current_token(p).type != TOK_RPAREN)
+        if (parser_get_current_token(p).type != TOK_RPAREN)
             parser_throw_error(p, ERROR_UNMATCHEDPAREN);
 
         p->current++;
@@ -287,7 +288,7 @@ AstNode* rule_primary(Parser *p) {
 
     } else if (match_tokentypes(p, TOK_LITERAL_IDENTIFIER, TOK_LITERAL_INTEGER, TOK_LITERAL_FLOAT, TOK_LITERAL_STRING, TOK_LITERAL_TRUE, TOK_LITERAL_FALSE, TOK_LITERAL_NIL, MATCH_SENTINEL)) {
 
-        ExprLiteral l = { .operator = get_current_token(p) };
+        ExprLiteral l = { .operator = parser_get_current_token(p) };
         new = ast_create_node(TYPE_LITERAL, &l);
         p->current++;
 
@@ -308,7 +309,7 @@ AstNode* rule_unary(Parser *p) {
 
     if (match_tokentypes(p, TOK_UNR_BANG, TOK_BIN_UNR_MINUS, TOK_BIN_UNR_SLASH, MATCH_SENTINEL)) {
 
-        Token operator = get_current_token(p);
+        Token operator = parser_get_current_token(p);
         p->current++;
         AstNode *node = rule_unary(p);
 
@@ -370,7 +371,7 @@ AstNode* rule_idtype_pair(Parser *p) {
     if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER))
         parser_throw_customerror("expected identifier");
 
-    Token identifier = get_current_token(p);
+    Token identifier = parser_get_current_token(p);
     p->current++;
 
     if (!match_tokentypes(p, TOK_SINGLEQUOTE, MATCH_SENTINEL))
@@ -378,7 +379,7 @@ AstNode* rule_idtype_pair(Parser *p) {
 
     p->current++;
 
-    Token datatype = get_current_token(p);
+    Token datatype = parser_get_current_token(p);
     if (!is_datatype(datatype.type))
         parser_throw_customerror("invalid type annotation");
 
@@ -465,13 +466,13 @@ AstNode* rule_assign(Parser *p) {
 
     if (p->tokens.tokens[p->current+1].type != TOK_ASSIGN) return NULL; // TODO: this
 
-    Token identifier = get_current_token(p);
+    Token identifier = parser_get_current_token(p);
     p->current++;
 
     if (!match_tokentypes(p, TOK_ASSIGN, MATCH_SENTINEL))
         return NULL;
 
-    Token operand = get_current_token(p); // TODO: this
+    Token operand = parser_get_current_token(p); // TODO: this
     p->current++;
 
     AstNode *expr = rule_expression(p);
@@ -567,7 +568,7 @@ AstNode *rule_function(Parser *p) {
         if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER))
             parser_throw_customerror("expected identifier");
 
-        Token identifier = get_current_token(p);
+        Token identifier = parser_get_current_token(p);
         ++p->current;
 
         if (!match_tokentypes(p, TOK_LPAREN, MATCH_SENTINEL))
@@ -604,7 +605,7 @@ AstNode *rule_function(Parser *p) {
         ++p->current;
 
 
-        Token returntype = get_current_token(p);
+        Token returntype = parser_get_current_token(p);
         if (!is_datatype(returntype.type))
             parser_throw_customerror("expected returntype");
         ++p->current;

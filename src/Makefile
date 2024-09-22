@@ -7,7 +7,7 @@ CFLAGS=-Wall -Wextra -std=c17 -pedantic -ggdb -O0 $(EXTRAFLAGS)
 BIN=compiler
 TEST=test
 
-all: main.c lexer.c parser.c eval.c repr.c
+all: main.c lexer.c parser.c repr.c typechecking.c
 	$(PYTHON) getgrammar.py # Generate grammar from comments
 	$(CC) $(CFLAGS) -o $(BIN) $^
 

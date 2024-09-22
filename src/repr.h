@@ -36,10 +36,15 @@
 
 #define COLOR_END         "\33[0m"
 
+#define PRINT_COLOR(color, string) \
+    printf("%s%s%s\n", (color), (string), COLOR_END)
 
-extern void print_input  (const char *input);
-extern void print_tokens (TokenList tokens);
-extern void print_ast    (AstNode *root);
+
+extern void print_input          (const char *input);
+extern void print_tokens_columns (TokenList tokens);
+extern void print_tokens_stream  (TokenList tokens);
+extern void print_ast            (AstNode *root);
+
 
 
 #endif // _REPR_H
