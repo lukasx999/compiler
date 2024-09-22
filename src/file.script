@@ -1,13 +1,9 @@
 
-
-
-defun foo (argc'int, argv'str) -> int {
-    let foo'int = 45;
-    ret;
-    ret 5;
+defun sum (a'int, b'int) -> int {
+    ret a + b;
 }
 
-if 1 { }
-else { }
-
-let bar'str;
+defun main (argc'int, argv'str) -> int {
+    sum(1, 2);
+    ret 0;
+}

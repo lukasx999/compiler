@@ -32,6 +32,10 @@ if 1==2 {
     var foo'int = 45;
 }
 
+# If Statements
+if 1 {}
+else {}
+
 # Functions
 defun main (argc'int, args'str) -> int {
     ret 0; # Return a value
