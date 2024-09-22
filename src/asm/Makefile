@@ -1,4 +1,6 @@
-all: main.asm
-	nasm $^ -felf64 -o main.o
-	cc main.o -no-pie
+all: printf.asm
+	# gdb: info registers => i r
+	# i r <register>
+	nasm $^ -felf64 -o main.o -g -F dwarf
+	cc main.o -no-pie -ggdb -O0
 	./a.out

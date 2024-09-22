@@ -89,10 +89,7 @@ typedef struct {
 typedef struct {
     Token identifier;
     AstNode *value;
-} StmtAssign;
-
-
-
+} StmtAssign; // TODO: make assignment an expression
 
 typedef struct {
     Token identifier, returntype;
@@ -151,64 +148,49 @@ extern void ast_free_nodes (AstNode *root);
 
 /* -- State of the Parser -- */
 
-
 typedef struct {
-
-    TokenList tokens;
-    size_t current;
+    TokenList tokens;     // dynamic array of tokens
+    size_t current;       // current token index
     const char *filename; // if empty -> repl
-    // TODO: add error state
-    // while parsing, add up errors, then dump them all at once and exit(1)
-    bool error;
-
+    uint32_t error_count; // if 0 -> no errors
 } Parser;
 
-
-
-
-extern Token parser_get_current_token(Parser *p);
-extern void parser_synchronize(Parser *p);
-extern AstNode* parse(TokenList tokens, const char *filename); // returns NULL when there are no tokens to be parsed
-
-
-/* -- ------------------- -- */
-
+extern Token    parser_get_current_token (Parser *p);
+extern AstNode* parse (TokenList tokens, const char *filename); // returns NULL when there are no tokens to be parsed
 
 
 /* -- Productions (rules) for the grammar -- */
 
 extern AstNode
 // expr
-*rule_primary     (Parser *p),
-*rule_unary       (Parser *p),
-*rule_factor      (Parser *p),
-*rule_term        (Parser *p),
-*rule_comparison  (Parser *p),
-*rule_equality    (Parser *p),
-*rule_expression  (Parser *p),
+*rule_primary        (Parser *p),
+*rule_unary          (Parser *p),
+*rule_factor         (Parser *p),
+*rule_term           (Parser *p),
+*rule_comparison     (Parser *p),
+*rule_equality       (Parser *p),
+*rule_expression     (Parser *p),
 // stmt
-*rule_vardeclaration     (Parser *p),
-*rule_exprstatement    (Parser *p),
-*rule_statement   (Parser *p),
-*rule_statement (Parser *p),
-*rule_program     (Parser *p);
+*rule_vardeclaration (Parser *p),
+*rule_function       (Parser *p),
+*rule_return         (Parser *p),
+*rule_program        (Parser *p),
+*rule_if             (Parser *p),
+*rule_block          (Parser *p),
+*rule_idtype_pair    (Parser *p),
+*rule_assign         (Parser *p),
+*rule_exprstatement  (Parser *p),
+*rule_statement      (Parser *p),
+*rule_statement      (Parser *p),
+*rule_program        (Parser *p);
 
 /* -- ----------------------------------- -- */
 
-
 /* ERROR HANDLING */
 
-enum ErrorTypes {
-    ERROR_INVALIDTOKEN,
-    ERROR_EMPTYGROUPING,
-    ERROR_UNMATCHEDPAREN,
-    ERROR_INCORRECTTYPE,
-    ERROR_EXPECTEDEXPR,
-    ERROR_UNEXPECTEDTOKEN,
-    ERROR_EXPECTEDSEMICOLON,
-};
-
-extern void parser_throw_error(Parser *p, enum ErrorTypes type);
+extern void parser_throw_error (Parser *p, const char *message);
+extern void parser_synchronize (Parser *p);
+extern void parser_exit_errors (Parser *p);
 
 /* -------------- */
 

@@ -1,8 +1,15 @@
-defun main() -> int {
+defun main(argv'str) -> int {
 
+    defun inner() -> void {}
+
+    let foo'int;
     let bar'int;
-    bar = 10;
-    let foo'int = 45;
+    { let baz'str; }
 
-    ret foo+bar;
+    if true {} else {}
+
+    1+2-(3*4+(5/6))+7-8;
+
+    ret;
+    ret 1+2+3;
 }

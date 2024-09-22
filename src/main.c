@@ -84,7 +84,8 @@ void run_from_file(char *filename) {
     print_input(source);
 
     TokenList tokens = tokenize(source);
-    print_tokens_stream(tokens);
+    print_tokens_columns(tokens);
+    // print_tokens_stream(tokens);
 
     AstNode *root = parse(tokens, filename);
     print_ast(root);
@@ -136,7 +137,8 @@ int main(int argc, char **argv) {
         print_input(input);
 
         TokenList tokens = tokenize(input);
-        print_tokens_stream(tokens);
+        print_tokens_columns(tokens);
+        // print_tokens_stream(tokens);
 
         AstNode *root = parse(tokens, "");
         print_ast(root);
