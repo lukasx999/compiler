@@ -1,0 +1,13 @@
+
+
+
+defun foo (argc'int, argv'str) -> int {
+    let foo'int = 45;
+    ret;
+    ret 5;
+}
+
+if 1 { }
+else { }
+
+let bar'str;

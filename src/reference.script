@@ -1,0 +1,39 @@
+# :so syntax.vim
+
+
+# Statements
+let foo'int = 5; # Declaration & Initialization
+let bar'int; # Declaration
+1+2; # Expression Statements
+1+2-(3*4+(5/6))+7-8; # Complex Expressions
+
+# Types:
+1; # Integers
+1.0; # Floats
+true && false; # Bools
+nil; # Nil
+"Hello, World"; # Strings
+
+foo = 3; # Assignment
+
+{
+# An empty Block (aka scope)
+    {
+    # They can also be nested!
+        {
+            let qux'int = 45; # Local variabled, only visible inside the scope
+        }
+    }
+}
+
+
+# If Statement
+if 1==2 {
+    var foo'int = 45;
+}
+
+# Functions
+defun main (argc'int, args'str) -> int {
+    ret 0; # Return a value
+    ret; # Return no value
+}

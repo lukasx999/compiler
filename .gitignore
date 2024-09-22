@@ -1,0 +1,7 @@
+valgrind-out.txt
+Session.vim
+a.out
+venv/
+__pycache__/
+compiler
+*.o
