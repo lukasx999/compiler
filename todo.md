@@ -4,6 +4,7 @@
 - [ ] add preprocessor for macros and removing comments
 - [ ] add comments to lexer
 - [ ] fix this: if1 {} == if 1 {}
+- [ ] `nil` vs `void`
 - [ ] else if
 - [ ] prevent `ret` in global scope
 - [ ] operator ")("

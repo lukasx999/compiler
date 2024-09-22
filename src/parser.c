@@ -559,7 +559,7 @@ AstNode *rule_return(Parser *p) {
 
 
 AstNode *rule_function(Parser *p) {
-// BNF: function -> "defun" IDENTIFIER "(" idtypepair ("," idtypepair)* ")" "->" DATATYPE body
+// BNF: function -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE body
 
     if (match_tokentypes(p, TOK_KEYWORD_DEFUN, MATCH_SENTINEL)) {
         ++p->current;
@@ -578,16 +578,19 @@ AstNode *rule_function(Parser *p) {
         AstNodeList arglist;
         astnodelist_init(&arglist);
 
-        while (1) {
-            AstNode *new = rule_idtype_pair(p);
-            astnodelist_append(&arglist, &new);
+        if (match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL)) {
+            while (1) {
+                AstNode *new = rule_idtype_pair(p);
+                astnodelist_append(&arglist, &new);
 
-            if (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL)) {
-                ++p->current;
-                continue;
+                if (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL)) {
+                    ++p->current;
+                    continue;
+                }
+                else break;
             }
-            else break;
         }
+        else arglist.nodes = NULL;
 
 
         if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))

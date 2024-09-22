@@ -96,7 +96,7 @@ typedef struct {
 
 typedef struct {
     Token identifier, returntype;
-    AstNodeList arguments;
+    AstNodeList arguments; // nodes == NULL if there are no arguments
     AstNode *body;
 } StmtFunction;
 

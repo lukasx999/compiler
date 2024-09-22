@@ -14,6 +14,7 @@ syntax match Type /int/
 syntax match Type /str/
 syntax match Type /bool/
 syntax match Type /float/
+syntax match Type /void/
 
 syntax match PunctMinor /\;$/
 syntax match PunctMinor /+/

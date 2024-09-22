@@ -49,11 +49,12 @@ KEYWORD_IN      = "in";
 
 // these are actually literals, but we'll treat them as keywords
 static keyword_t
-LITERAL_TRUE     = "true",
-LITERAL_FALSE    = "false",
-LITERAL_NIL      = "nil",
-KEYWORD_TYPE_INT = "int",
-KEYWORD_TYPE_STR = "str";
+LITERAL_TRUE      = "true",
+LITERAL_FALSE     = "false",
+LITERAL_NIL       = "nil",
+KEYWORD_TYPE_INT  = "int",
+KEYWORD_TYPE_STR  = "str",
+KEYWORD_TYPE_VOID = "void";
 
 
 // keywords always have to be manually sorted by length in descending order (eg: for vs foreach -> matches only for)
@@ -63,6 +64,7 @@ static keyword_t keywords[] = {
     KEYWORD_RETURN,
     LITERAL_TRUE,
     KEYWORD_PUTS,
+    KEYWORD_TYPE_VOID,
     KEYWORD_ELSE,
     KEYWORD_LOOP,
     KEYWORD_TYPE_STR,
@@ -144,6 +146,7 @@ enum TokenType {
 
     TOK_KEYWORD_DATATYPE_INT,
     TOK_KEYWORD_DATATYPE_STR,
+    TOK_KEYWORD_DATATYPE_VOID,
     // TODO: floats, ...
 
     // LITERALS
@@ -159,6 +162,7 @@ enum TokenType {
 static enum TokenType datatypes[] = {
     TOK_KEYWORD_DATATYPE_INT,
     TOK_KEYWORD_DATATYPE_STR,
+    TOK_KEYWORD_DATATYPE_VOID,
 };
 
 static inline bool
@@ -210,6 +214,7 @@ static char token_repr[][BUFSIZE] = {
     "in",
     "int",
     "str",
+    "void",
 
     "true",
     "false",

@@ -2,7 +2,7 @@
 
 program             -> statement* EOF
 statement           -> vardecl | assign | expressionstatement | block
-function            -> "defun" IDENTIFIER "(" idtypepair ("," idtypepair)* ")" "->" DATATYPE body
+function            -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE body
 return              -> "ret" expression? ";"
 if                  -> "if" expression block ("else" block)?
 expressionstatement -> expression ";"

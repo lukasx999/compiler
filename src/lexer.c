@@ -132,20 +132,21 @@ static enum TokenType match_keyword(char *query) {
 
     enum TokenType type;
 
-    if      (!strcmp(query, KEYWORD_LET))      type = TOK_KEYWORD_LET;
-    else if (!strcmp(query, KEYWORD_DEFUN))    type = TOK_KEYWORD_DEFUN;
-    else if (!strcmp(query, KEYWORD_RETURN))   type = TOK_KEYWORD_RETURN;
-    else if (!strcmp(query, KEYWORD_LOOP))     type = TOK_KEYWORD_LOOP;
-    else if (!strcmp(query, KEYWORD_PUTS))     type = TOK_KEYWORD_PUTS;
-    else if (!strcmp(query, KEYWORD_END))      type = TOK_KEYWORD_END;
-    else if (!strcmp(query, KEYWORD_IF))       type = TOK_KEYWORD_IF;
-    else if (!strcmp(query, KEYWORD_ELSE))     type = TOK_KEYWORD_ELSE;
-    else if (!strcmp(query, KEYWORD_IN))       type = TOK_KEYWORD_IN;
-    else if (!strcmp(query, LITERAL_TRUE))     type = TOK_LITERAL_TRUE;
-    else if (!strcmp(query, LITERAL_FALSE))    type = TOK_LITERAL_FALSE;
-    else if (!strcmp(query, LITERAL_NIL))      type = TOK_LITERAL_NIL;
-    else if (!strcmp(query, KEYWORD_TYPE_INT)) type = TOK_KEYWORD_DATATYPE_INT;
-    else if (!strcmp(query, KEYWORD_TYPE_STR)) type = TOK_KEYWORD_DATATYPE_STR;
+    if      (!strcmp(query, KEYWORD_LET))       type = TOK_KEYWORD_LET;
+    else if (!strcmp(query, KEYWORD_DEFUN))     type = TOK_KEYWORD_DEFUN;
+    else if (!strcmp(query, KEYWORD_RETURN))    type = TOK_KEYWORD_RETURN;
+    else if (!strcmp(query, KEYWORD_LOOP))      type = TOK_KEYWORD_LOOP;
+    else if (!strcmp(query, KEYWORD_PUTS))      type = TOK_KEYWORD_PUTS;
+    else if (!strcmp(query, KEYWORD_END))       type = TOK_KEYWORD_END;
+    else if (!strcmp(query, KEYWORD_IF))        type = TOK_KEYWORD_IF;
+    else if (!strcmp(query, KEYWORD_ELSE))      type = TOK_KEYWORD_ELSE;
+    else if (!strcmp(query, KEYWORD_IN))        type = TOK_KEYWORD_IN;
+    else if (!strcmp(query, LITERAL_TRUE))      type = TOK_LITERAL_TRUE;
+    else if (!strcmp(query, LITERAL_FALSE))     type = TOK_LITERAL_FALSE;
+    else if (!strcmp(query, LITERAL_NIL))       type = TOK_LITERAL_NIL;
+    else if (!strcmp(query, KEYWORD_TYPE_INT))  type = TOK_KEYWORD_DATATYPE_INT;
+    else if (!strcmp(query, KEYWORD_TYPE_STR))  type = TOK_KEYWORD_DATATYPE_STR;
+    else if (!strcmp(query, KEYWORD_TYPE_VOID)) type = TOK_KEYWORD_DATATYPE_VOID;
 
     else assert(!"keyword case not handled");
 
