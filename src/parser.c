@@ -323,9 +323,19 @@ AstNode* rule_equality(Parser *p) {
     BINARYEXPR(rule_comparison, TOK_BIN_EQUAL, TOK_BIN_EQUAL_NOT)
 }
 
+AstNode* rule_logic_and(Parser *p) {
+    // BNF: logic_and -> equality ( "and" equality )*
+    BINARYEXPR(rule_equality, TOK_BIN_LOGICAL_AND)
+}
+
+AstNode* rule_logic_or(Parser *p) {
+    // BNF: logic_or -> logic_and ( "||" logic_and )*
+    BINARYEXPR(rule_logic_and, TOK_BIN_LOGICAL_OR)
+}
+
 AstNode* rule_expression(Parser *p) {
     // BNF: expression -> equality
-    return rule_equality(p);
+    return rule_logic_or(p);
 }
 
 
@@ -408,10 +418,17 @@ AstNode* rule_block(Parser *p) {
 
 // returns NULL if statement was not matched
 AstNode* rule_vardeclaration(Parser *p) {
-    // BNF: vardeclaration -> "let" IDTYPEPAIR ( "=" expression )? ";"
+    // BNF: vardeclaration -> "let" "mut"? IDTYPEPAIR ( "=" expression )? ";"
 
     if (match_tokentypes(p, TOK_KEYWORD_LET, MATCH_SENTINEL)) {
         ++p->current;
+
+        bool mutable = false;
+        if (match_tokentypes(p, TOK_KEYWORD_MUT, MATCH_SENTINEL)) {
+            mutable = true;
+            ++p->current;
+        }
+
 
         AstNode *idtypepair = rule_idtype_pair(p);
 
@@ -427,7 +444,8 @@ AstNode* rule_vardeclaration(Parser *p) {
         ++p->current;
 
         StmtVarDeclaration op = { .idtypepair = idtypepair,
-                                  .value      = value };
+                                  .value      = value,
+                                  .mutable    = mutable };
 
         return ast_create_node(TYPE_VARDECLARATION, &op);
 

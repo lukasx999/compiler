@@ -84,6 +84,7 @@ typedef struct {
 typedef struct {
     AstNode *idtypepair;
     AstNode *value; // NULL if not yet specified
+    bool mutable;
 } StmtVarDeclaration;
 
 typedef struct {

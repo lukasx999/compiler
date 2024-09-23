@@ -1,15 +1,23 @@
 # TODO
 - [ ] tests
 - [ ] add preprocessor for macros and removing comments
+- [ ] string interpolation
+- [ ] inline assembly
 - [ ] add comments to lexer
 - [ ] fix this: if1 {} == if 1 {} or ret1 == ret 1
 - [ ] make assignment an expression
+- [ ] type checking pass
+- [ ] dollar as part of identifier of global variables?
+- [ ] add info calls to repr
+- [ ] function calls
+- [ ] productions with multiple tokens (operator precedence)
+- [ ] references/pointers (let foo'&int;)
+- [ ] lambda functions (like js)
 - [ ] `nil` vs `void`
 - [ ] else if
 - [ ] prevent `ret` in global scope
 - [ ] operator ")("
 - [ ] evaluating expressions at compile time?
-- [ ] Automatic type deduction (foo := 3;)
 - [ ] find a name for the language
 - [ ] sophisticated Nvim plugin for syntax highlighting
 - [x] refactor repr.c

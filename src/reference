@@ -1,10 +1,28 @@
 # :so syntax.vim
 
 
+# Preprocessor Macros
+$define FOO let foo'int = 45;
+
+$macro FOO
+    if true {
+    }
+$end
+
+
+
+#*
+Multi line comments
+*#
+
+
+
 # Statements
-let foo'int = 5; # Declaration & Initialization
-let bar'int; # Declaration
-1+2; # Expression Statements
+# All variables are immutable by default
+let foo'int = 5;     # Declaration & Initialization
+let bar'int;         # Declaration
+let mut baz'int;     # Create a mutable variable
+1+2;                 # Expression Statements
 1+2-(3*4+(5/6))+7-8; # Complex Expressions
 
 # Types:
@@ -15,6 +33,10 @@ nil; # Nil
 "Hello, World"; # Strings
 
 foo = 3; # Assignment
+
+let foo'int = 45; # Integers
+let foo'bool = true; # Booleans
+let foo'str = "greetings"; # Strings
 
 {
 # An empty Block (aka scope)
@@ -29,15 +51,20 @@ foo = 3; # Assignment
 
 # If Statement
 if 1==2 {
-    var foo'int = 45;
+    let foo'int = 45;
 }
 
-# If Statements
+# Else
 if 1 {}
 else {}
 
 # Functions
+# main function
 defun main (argc'int, args'str) -> int {
     ret 0; # Return a value
     ret; # Return no value
+}
+
+defun func () -> void {
+    ret;
 }

@@ -19,6 +19,7 @@
 #define PUNCT_NEWLINE             '\n'
 #define PUNCT_SEMICOLON           ';'
 #define PUNCT_AMPERSAND           '&'
+#define PUNCT_PIPE                '|'
 #define PUNCT_ASTERISK            '*'
 #define PUNCT_COMMA               ','
 #define PUNCT_EQUAL               '='
@@ -38,6 +39,7 @@ typedef const char * const keyword_t;
 
 static keyword_t
 KEYWORD_LET     = "let",
+KEYWORD_MUT     = "mut",
 KEYWORD_DEFUN   = "defun",
 KEYWORD_RETURN  = "ret",
 KEYWORD_PUTS    = "puts",
@@ -54,6 +56,7 @@ LITERAL_FALSE     = "false",
 LITERAL_NIL       = "nil",
 KEYWORD_TYPE_INT  = "int",
 KEYWORD_TYPE_STR  = "str",
+KEYWORD_TYPE_BOOL = "bool",
 KEYWORD_TYPE_VOID = "void";
 
 
@@ -65,6 +68,8 @@ static keyword_t keywords[] = {
     LITERAL_TRUE,
     KEYWORD_PUTS,
     KEYWORD_TYPE_VOID,
+    KEYWORD_MUT,
+    KEYWORD_TYPE_BOOL,
     KEYWORD_ELSE,
     KEYWORD_LOOP,
     KEYWORD_TYPE_STR,
@@ -108,7 +113,7 @@ enum TokenType {
     TOK_DOT,
     TOK_COMMA,
 
-    TOK_AMPERSAND,
+    TOK_PIPE, TOK_AMPERSAND,
     TOK_SINGLEQUOTE,
 
     TOK_LPAREN, TOK_RPAREN,
@@ -129,12 +134,15 @@ enum TokenType {
     TOK_BIN_LESS_THAN, TOK_BIN_GREATER_THAN,
     TOK_BIN_PLUS,
     TOK_BIN_UNR_MINUS,  // minus is both binary and unary
+    TOK_BIN_LOGICAL_AND,
+    TOK_BIN_LOGICAL_OR,
 
     // UNARY EXPRESSIONS
     TOK_UNR_BANG,
 
     // KEYWORDS
     TOK_KEYWORD_LET,
+    TOK_KEYWORD_MUT,
     TOK_KEYWORD_PUTS,
     TOK_KEYWORD_DEFUN,
     TOK_KEYWORD_RETURN,
@@ -146,6 +154,7 @@ enum TokenType {
 
     TOK_KEYWORD_DATATYPE_INT,
     TOK_KEYWORD_DATATYPE_STR,
+    TOK_KEYWORD_DATATYPE_BOOL,
     TOK_KEYWORD_DATATYPE_VOID,
     // TODO: floats, ...
 
@@ -162,6 +171,7 @@ enum TokenType {
 static enum TokenType datatypes[] = {
     TOK_KEYWORD_DATATYPE_INT,
     TOK_KEYWORD_DATATYPE_STR,
+    TOK_KEYWORD_DATATYPE_BOOL,
     TOK_KEYWORD_DATATYPE_VOID,
 };
 
@@ -185,6 +195,7 @@ static char token_repr[][BUFSIZE] = {
     "semicolon",
     "dot",
     "comma",
+    "pipe",
     "ampersand",
     "singlequote",
     "lparen", "rparen",
@@ -202,10 +213,13 @@ static char token_repr[][BUFSIZE] = {
     "less_than", "greater_than",
     "plus",
     "minus",
+    "and",
+    "or",
 
     "bang",
 
     "let",
+    "mut",
     "puts",
     "defun", "return",
     "loop",
@@ -214,6 +228,7 @@ static char token_repr[][BUFSIZE] = {
     "in",
     "int",
     "str",
+    "bool",
     "void",
 
     "true",

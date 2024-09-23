@@ -64,7 +64,11 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
 
         case TYPE_VARDECLARATION: {
-            printf("%s%svardecl: `%s` of `%s`%s\n", COLOR_BLUE, COLOR_BOLD, root->ast_vardecl.idtypepair->ast_idtypepair.identifier.value, token_repr[root->ast_vardecl.idtypepair->ast_idtypepair.type.type], COLOR_END);
+            const char *mutable_str = "";
+            if (root->ast_vardecl.mutable)
+                mutable_str = "(mutable)";
+
+            printf("%svardecl: `%s` of `%s` %s%s\n", COLOR_BLUE, root->ast_vardecl.idtypepair->ast_idtypepair.identifier.value, token_repr[root->ast_vardecl.idtypepair->ast_idtypepair.type.type], mutable_str, COLOR_END);
             _rec_print_ast(root->ast_vardecl.value, ++level);
         } break;
 
@@ -76,7 +80,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
         } break;
 
         case TYPE_FUNCTION: {
-            printf("%s%sfunction `%s` -> `%s`%s\n", COLOR_BLUE, COLOR_BOLD, root->ast_function.identifier.value, token_repr[root->ast_function.returntype.type], COLOR_END);
+            printf("%sfunction: `%s` -> `%s`%s\n", COLOR_BLUE, root->ast_function.identifier.value, token_repr[root->ast_function.returntype.type], COLOR_END);
 
             size_t size = root->ast_function.arguments.size;
 
@@ -91,12 +95,12 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
         } break;
 
         case TYPE_RETURN: {
-            printf("%s%sreturn%s\n", COLOR_BLUE, COLOR_BOLD, COLOR_END);
+            printf("%sreturn%s\n", COLOR_BLUE, COLOR_END);
             _rec_print_ast(root->ast_return.expression, ++level);
         } break;
 
         case TYPE_ASSIGN: {
-            printf("%s%sassign: `%s`%s\n", COLOR_BLUE, COLOR_BOLD, root->ast_assign.identifier.value, COLOR_END);
+            printf("%sassign: `%s`%s\n", COLOR_BLUE, root->ast_assign.identifier.value, COLOR_END);
             _rec_print_ast(root->ast_assign.value, ++level);
         } break;
 
@@ -114,7 +118,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
         } break;
 
         case TYPE_BLOCK: {
-            printf("%s%s%s%s\n", COLOR_PURPLE_HIGH, COLOR_BOLD, "block", COLOR_END);
+            printf("%s%s%s\n", COLOR_PURPLE_HIGH, "block", COLOR_END);
 
             size_t size = root->ast_block.statements.size;
 

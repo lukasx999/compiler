@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 
 #include "lexer.h"
 #include "repr.h"
@@ -98,6 +99,14 @@ void run_from_file(char *filename) {
 
 
 int main(int argc, char **argv) {
+
+
+    // int childpid = fork();
+    // if (childpid == 0) {
+    //     execlp("sbcl", "sbcl", "--script", "preprocessor.lisp", (char*) NULL);
+    // }
+    // waitpid(childpid, NULL, 0);
+
 
     // REPL
     if (argc == 2 && !strcmp(argv[1], "repl"))

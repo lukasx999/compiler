@@ -133,6 +133,7 @@ static enum TokenType match_keyword(char *query) {
     enum TokenType type;
 
     if      (!strcmp(query, KEYWORD_LET))       type = TOK_KEYWORD_LET;
+    else if (!strcmp(query, KEYWORD_MUT))       type = TOK_KEYWORD_MUT;
     else if (!strcmp(query, KEYWORD_DEFUN))     type = TOK_KEYWORD_DEFUN;
     else if (!strcmp(query, KEYWORD_RETURN))    type = TOK_KEYWORD_RETURN;
     else if (!strcmp(query, KEYWORD_LOOP))      type = TOK_KEYWORD_LOOP;
@@ -146,6 +147,7 @@ static enum TokenType match_keyword(char *query) {
     else if (!strcmp(query, LITERAL_NIL))       type = TOK_LITERAL_NIL;
     else if (!strcmp(query, KEYWORD_TYPE_INT))  type = TOK_KEYWORD_DATATYPE_INT;
     else if (!strcmp(query, KEYWORD_TYPE_STR))  type = TOK_KEYWORD_DATATYPE_STR;
+    else if (!strcmp(query, KEYWORD_TYPE_BOOL)) type = TOK_KEYWORD_DATATYPE_BOOL;
     else if (!strcmp(query, KEYWORD_TYPE_VOID)) type = TOK_KEYWORD_DATATYPE_VOID;
 
     else assert(!"keyword case not handled");
@@ -207,10 +209,6 @@ Token lexer_next_token(Lexer *l, bool *skip_token) {
             new.type = TOK_BIN_ASTERISK;
             break;
 
-        case PUNCT_AMPERSAND:
-            new.type = TOK_AMPERSAND;
-            break;
-
         case PUNCT_SEMICOLON:
             new.type = TOK_SEMICOLON;
             break;
@@ -251,6 +249,28 @@ Token lexer_next_token(Lexer *l, bool *skip_token) {
 
 
         // DOUBLE CHAR SYMBOLS
+
+        case PUNCT_AMPERSAND: {
+            if (lexer_lookahead(l, PUNCT_AMPERSAND)) {
+                new.type = TOK_BIN_LOGICAL_AND;
+                ++l->pos;
+
+            } else
+                new.type = TOK_AMPERSAND;
+
+        } break;
+
+        case PUNCT_PIPE: {
+            if (lexer_lookahead(l, PUNCT_PIPE)) {
+                new.type = TOK_BIN_LOGICAL_OR;
+                ++l->pos;
+
+            } else
+                new.type = TOK_PIPE;
+
+        } break;
+
+
 
         case PUNCT_EQUAL: {
             if (lexer_lookahead(l, PUNCT_EQUAL)) {

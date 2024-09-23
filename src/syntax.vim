@@ -4,6 +4,7 @@
 " syntax/script.vim
 syntax match Keyword /let/
 syntax match Keyword /var/
+syntax match Keyword /mut/
 syntax match Keyword /defun/
 syntax match Keyword /ret/
 syntax match Keyword /if/
@@ -23,6 +24,7 @@ syntax match PunctMinor /\*/
 syntax match PunctMinor /\//
 syntax match PunctMinor /=/
 syntax match PunctMinor /'/
+syntax match PunctMinor /&/
 syntax match PunctMinor /&&/
 syntax match PunctMinor /||/
 syntax match PunctMinor /!/
@@ -50,6 +52,10 @@ syntax match PunctParens /]/
 
 syntax match Comments /#.*$/
 
+syntax match Preprocessor /$define/
+syntax match Preprocessor /$macro/
+syntax match Preprocessor /$end/
+
 highlight Keyword       ctermfg=blue  guifg=#bc72d4
 highlight Type          ctermfg=blue  guifg=#7c91e6
 highlight PunctMinor    ctermfg=grey  guifg=#8f96a1
@@ -58,3 +64,4 @@ highlight StringLiteral ctermfg=green guifg=#7ce683
 highlight PunctParens   ctermfg=red   guifg=#e05555
 highlight Identifier    ctermfg=white guifg=#ede4e4
 highlight Comments      ctermfg=grey  guifg=#64676b
+highlight Preprocessor  ctermfg=grey  guifg=#803e46

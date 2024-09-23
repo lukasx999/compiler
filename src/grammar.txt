@@ -7,10 +7,12 @@ return              -> "ret" expression? ";"
 if                  -> "if" expression block ("else" block)?
 expressionstatement -> expression ";"
 assign              -> IDENTIFIER "=" expression ";"
-vardeclaration      -> "let" IDTYPEPAIR ( "=" expression )? ";"
+vardeclaration      -> "let" "mut"? IDTYPEPAIR ( "=" expression )? ";"
 block               -> "{" statement* "}"
 idtypepair          -> IDENTIFIER "'" DATATYPE
 expression          -> equality
+logic_or            -> logic_and ( "||" logic_and )*
+logic_and           -> equality ( "and" equality )*
 equality            -> comparison ( ( "!=" | "==" ) comparison )*
 comparison          -> term ( ( ">" | ">=" | "<" | "<=" ) term )*
 term                -> factor ( ( "-" | "+" ) factor )*

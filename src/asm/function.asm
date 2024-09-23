@@ -1,19 +1,12 @@
-    extern exit
-
-    section .text
-
-    global main
-
+section .text
 
 function:
-    push rbp
+    ret
 
-    pop rbp
-    ret 5
-
+global main
 main:
 
     call function
 
-    mov rdi, 0
-    call exit
+    mov rax, 0
+    ret
