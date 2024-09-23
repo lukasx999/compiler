@@ -277,6 +277,10 @@ Token lexer_next_token(Lexer *l, bool *skip_token) {
                 new.type = TOK_BIN_EQUAL;
                 ++l->pos;
 
+            } else if (lexer_lookahead(l, '>')) {
+                new.type = TOK_DOUBLE_ARROW;
+                ++l->pos;
+
             } else
                 new.type = TOK_ASSIGN;
 

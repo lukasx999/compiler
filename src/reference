@@ -68,3 +68,8 @@ defun main (argc'int, args'str) -> int {
 defun func () -> void {
     ret;
 }
+
+
+# Lambda function
+() -> void => {}
+(foo'int) -> int => { ret 5; }

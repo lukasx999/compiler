@@ -125,7 +125,7 @@ enum TokenType {
     TOK_LESS_THAN_EQUAL, TOK_GREATER_THAN_EQUAL,
     TOK_EXPR_PLUS_EQUAL, TOK_EXPR_MINUS_EQUAL,
     TOK_ASSIGN,
-    TOK_ARROW,
+    TOK_ARROW, TOK_DOUBLE_ARROW,
 
     // BINARY EXPRESSIONS
     TOK_BIN_EQUAL, TOK_BIN_EQUAL_NOT,
@@ -206,6 +206,7 @@ static char token_repr[][BUFSIZE] = {
     "expr_plus_equal", "expr_minus_equal",
     "assign",
     "arrow",
+    "doublearrow",
 
     "equal", "equal_not",
     "slash",
