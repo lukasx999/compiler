@@ -29,3 +29,21 @@
 
 # NOTES
 - which backend? (llvm-ir, qbe, nasm)
+
+- Compilation stages
+
+```
+main (preprocessing)
+(./pre)
+  |
+main (compilation)
+(./compiler)
+  |
+out.s (assembly)
+(nasm)
+  |
+out.o (linking)
+(gcc)
+  |
+out (elf64 executable)
+```
