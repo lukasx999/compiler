@@ -100,8 +100,9 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
         } break;
 
         case TYPE_ASSIGN: {
-            printf("%sassign: `%s`%s\n", COLOR_BLUE, root->ast_assign.identifier.value, COLOR_END);
-            _rec_print_ast(root->ast_assign.value, ++level);
+            printf("%sassign%s\n", COLOR_BLUE, COLOR_END);
+            _rec_print_ast(root->ast_assign.identifier, ++level);
+            _rec_print_ast(root->ast_assign.value, level);
         } break;
 
         case TYPE_PROGRAMROOT: {

@@ -4,14 +4,14 @@
 - [ ] string interpolation
 - [ ] inline assembly
 - [ ] add comments to lexer
-- [ ] fix this: if1 {} == if 1 {} or ret1 == ret 1
-- [ ] make assignment an expression
 - [ ] type checking pass
 - [ ] xor operator: )(
+- [ ] warning if not using `$` for globals
 - [ ] implicit tokens?
 - [ ] implicit void returntype (defun foo() {})
-- [ ] dollar as part of identifier of global variables?
-- [ ] function declarations (NULL pointer)
+- [ ] seperate ast node for logical operators?
+- [ ] dollar as part of identifier of global variables
+- [ ] function: extra node for function parameters
 - [ ] add info calls to repr
 - [ ] function calls
 - [ ] productions with multiple tokens (operator precedence)
@@ -24,6 +24,9 @@
 - [ ] evaluating expressions at compile time?
 - [ ] find a name for the language
 - [ ] sophisticated Nvim plugin for syntax highlighting
+- [x] make assignment an expression
+- [x] fix this: if1 {} == if 1 {} or ret1 == ret 1
+- [x] function declarations (NULL pointer)
 - [x] refactor repr.c
 - [x] inline tokenizer repr list
 - [x] synchronize parser for better error handling (not the best, but it kinda works)

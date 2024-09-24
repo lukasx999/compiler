@@ -32,6 +32,7 @@
 #define PUNCT_LBRACKET            '['
 #define PUNCT_RBRACKET            ']'
 #define PUNCT_SINGLEQUOTE         '\''
+#define PUNCT_DOLLARSIGN          '$'
 #define PUNCT_NULLBYTE            '\0'
 
 
@@ -45,9 +46,8 @@ KEYWORD_RETURN  = "ret",
 KEYWORD_PUTS    = "puts",
 KEYWORD_LOOP    = "loop",
 KEYWORD_IF      = "if",
-KEYWORD_ELSE    = "else",
-KEYWORD_END     = "end",
-KEYWORD_IN      = "in";
+KEYWORD_ELSEIF  = "elsif",
+KEYWORD_ELSE    = "else";
 
 // these are actually literals, but we'll treat them as keywords
 static keyword_t
@@ -69,16 +69,15 @@ static keyword_t keywords[] = {
     KEYWORD_PUTS,
     KEYWORD_TYPE_VOID,
     KEYWORD_MUT,
+    KEYWORD_ELSEIF,
     KEYWORD_TYPE_BOOL,
     KEYWORD_ELSE,
     KEYWORD_LOOP,
     KEYWORD_TYPE_STR,
     KEYWORD_TYPE_INT,
     LITERAL_NIL,
-    KEYWORD_END,
     KEYWORD_LET,
     KEYWORD_IF,
-    KEYWORD_IN,
 
 };
 
@@ -149,9 +148,8 @@ enum TokenType {
     TOK_KEYWORD_RETURN,
     TOK_KEYWORD_LOOP,
     TOK_KEYWORD_IF,
+    TOK_KEYWORD_ELSEIF,
     TOK_KEYWORD_ELSE,
-    TOK_KEYWORD_END,
-    TOK_KEYWORD_IN,
 
     TOK_KEYWORD_DATATYPE_INT,
     TOK_KEYWORD_DATATYPE_STR,
@@ -235,9 +233,8 @@ static char token_repr[][BUFSIZE] = {
     [TOK_KEYWORD_RETURN]        = "return",
     [TOK_KEYWORD_LOOP]          = "loop",
     [TOK_KEYWORD_IF]            = "if",
+    [TOK_KEYWORD_ELSEIF]        = "elsif",
     [TOK_KEYWORD_ELSE]          = "else",
-    [TOK_KEYWORD_END]           = "end",
-    [TOK_KEYWORD_IN]            = "in",
     [TOK_KEYWORD_DATATYPE_INT]  = "int",
     [TOK_KEYWORD_DATATYPE_STR]  = "str",
     [TOK_KEYWORD_DATATYPE_BOOL] = "bool",

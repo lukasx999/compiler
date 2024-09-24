@@ -106,11 +106,11 @@ ast_create_node(enum AstNode_type type, void *operation) {
         case TYPE_UNARYOP:        new->ast_unaryop     = *(ExprUnaryOp*)         operation; break;
         case TYPE_LITERAL:        new->ast_literal     = *(ExprLiteral*)         operation; break;
         case TYPE_GROUPING:       new->ast_grouping    = *(ExprGrouping*)        operation; break;
-        case TYPE_ASSIGN:         new->ast_assign      = *(ExprAssign*)          operation; break;
         case TYPE_VARDECLARATION: new->ast_vardecl     = *(StmtVarDeclaration*)  operation; break;
         case TYPE_IF:             new->ast_if          = *(StmtIf*)              operation; break;
         case TYPE_FUNCTION:       new->ast_function    = *(StmtFunction*)        operation; break;
         case TYPE_RETURN:         new->ast_return      = *(StmtReturn*)          operation; break;
+        case TYPE_ASSIGN:         new->ast_assign      = *(StmtAssign*)          operation; break;
         case TYPE_PROGRAMROOT:    new->ast_programroot = *(ProgramRoot*)         operation; break;
         case TYPE_BLOCK:          new->ast_block       = *(Block*)               operation; break;
         case TYPE_IDTYPEPAIR:     new->ast_idtypepair  = *(IdTypePair*)          operation; break;
@@ -333,32 +333,9 @@ AstNode* rule_logic_or(Parser *p) {
     BINARYEXPR(rule_logic_and, TOK_BIN_LOGICAL_OR)
 }
 
-
-AstNode* rule_assign(Parser *p) {
-    // BNF: assign -> rule_logic_or "=" rule_assign | rule_logic_or
-
-    AstNode *expr = rule_logic_or(p);
-    if (match_tokentypes(p, TOK_ASSIGN, MATCH_SENTINEL)){
-        ++p->current;
-
-        AstNode *value = rule_assign(p);
-
-        ExprAssign op = { .identifier = expr,
-                          .value      = value };
-        expr = ast_create_node(TYPE_ASSIGN, &op);
-
-    }
-
-    return expr;
-
-}
-
-
-
-
 AstNode* rule_expression(Parser *p) {
     // BNF: expression -> equality
-    return rule_assign(p);
+    return rule_logic_or(p);
 }
 
 
@@ -478,6 +455,33 @@ AstNode* rule_vardeclaration(Parser *p) {
 }
 
 
+// TODO: refactor this into an expression, that takes an expression as an lvalue, while not evaluating it
+AstNode* rule_assign(Parser *p) {
+    // BNF: assign -> IDENTIFIER "=" expression ";"
+
+    if (p->tokens.tokens[p->current+1].type != TOK_ASSIGN) return NULL; // TODO: this
+
+    Token identifier = parser_get_current_token(p);
+    p->current++;
+
+    if (!match_tokentypes(p, TOK_ASSIGN, MATCH_SENTINEL))
+        return NULL;
+
+    Token operand = parser_get_current_token(p); // TODO: this
+    p->current++;
+
+    AstNode *expr = rule_expression(p);
+
+    // check for semicolon
+    if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
+        parser_throw_error(p, "expected semicolon");
+    p->current++;
+
+
+    StmtAssign op = { .identifier = identifier, .value = expr };
+    return ast_create_node(TYPE_ASSIGN, &op);
+
+}
 
 
 
@@ -643,6 +647,9 @@ AstNode* rule_statement(Parser *p) {
     if (new != NULL) return new;
 
     new = rule_return(p);
+    if (new != NULL) return new;
+
+    new = rule_assign(p);
     if (new != NULL) return new;
 
     new = rule_block(p);

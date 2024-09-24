@@ -2,15 +2,15 @@
 
 program             -> statement* EOF
 statement           -> vardecl | assign | expressionstatement | block
-function            -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE body
+function            -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE (body | ";")
 return              -> "ret" expression? ";"
 if                  -> "if" expression block ("else" block)?
 expressionstatement -> expression ";"
-assign              -> IDENTIFIER "=" expression ";"
 vardeclaration      -> "let" "mut"? IDTYPEPAIR ( "=" expression )? ";"
 block               -> "{" statement* "}"
 idtypepair          -> IDENTIFIER "'" DATATYPE
 expression          -> equality
+assign              -> rule_logic_or "=" rule_assign | rule_logic_or
 logic_or            -> logic_and ( "||" logic_and )*
 logic_and           -> equality ( "and" equality )*
 equality            -> comparison ( ( "!=" | "==" ) comparison )*

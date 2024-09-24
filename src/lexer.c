@@ -42,8 +42,8 @@ void tokenlist_free(TokenList *tl) {
 
 static bool is_identifier(char c) {
 
-    // (uppercase)                || (lowercase)            || '_'
-    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
+    // (uppercase)                || (lowercase)
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || c == '$';
 
 }
 
@@ -64,13 +64,12 @@ static size_t get_keyword
 (char **matched_kw, Lexer *l, keyword_t *keywords, size_t keywords_size) {
 
     // make all keywords require at least one whitespace
-    // TODO: if(foo) vs if (foo)
 
     size_t skip = 0;
     for (size_t i=l->pos ;; ++i) {
 
         char c = l->src[i];
-        if (!is_identifier(c)) {
+        if (!is_identifier(c) && !is_number(c)) {
             skip = i;
             break;
         }
@@ -138,10 +137,8 @@ static enum TokenType match_keyword(char *query) {
     else if (!strcmp(query, KEYWORD_RETURN))    type = TOK_KEYWORD_RETURN;
     else if (!strcmp(query, KEYWORD_LOOP))      type = TOK_KEYWORD_LOOP;
     else if (!strcmp(query, KEYWORD_PUTS))      type = TOK_KEYWORD_PUTS;
-    else if (!strcmp(query, KEYWORD_END))       type = TOK_KEYWORD_END;
     else if (!strcmp(query, KEYWORD_IF))        type = TOK_KEYWORD_IF;
     else if (!strcmp(query, KEYWORD_ELSE))      type = TOK_KEYWORD_ELSE;
-    else if (!strcmp(query, KEYWORD_IN))        type = TOK_KEYWORD_IN;
     else if (!strcmp(query, LITERAL_TRUE))      type = TOK_LITERAL_TRUE;
     else if (!strcmp(query, LITERAL_FALSE))     type = TOK_LITERAL_FALSE;
     else if (!strcmp(query, LITERAL_NIL))       type = TOK_LITERAL_NIL;

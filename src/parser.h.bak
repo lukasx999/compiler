@@ -39,12 +39,6 @@ typedef struct {
     AstNode *node;
 } ExprGrouping;
 
-typedef struct {
-    AstNode *identifier; // Token?
-    AstNode *value;
-} ExprAssign;
-
-
 /* -- ----------- -- */
 
 
@@ -93,6 +87,11 @@ typedef struct {
 } StmtVarDeclaration;
 
 typedef struct {
+    Token identifier;
+    AstNode *value;
+} StmtAssign; // TODO: make assignment an expression
+
+typedef struct {
     Token identifier, returntype;
     AstNodeList arguments; // nodes == NULL if there are no arguments
     AstNode *body; // NULL if no body == declaration
@@ -127,11 +126,11 @@ struct AstNode { // tagged union
         ExprUnaryOp         ast_unaryop;
         ExprLiteral         ast_literal;
         ExprGrouping        ast_grouping;
-        ExprAssign          ast_assign;
         StmtVarDeclaration  ast_vardecl;
         StmtIf              ast_if;
         StmtFunction        ast_function;
         StmtReturn          ast_return;
+        StmtAssign          ast_assign;
         ProgramRoot         ast_programroot;
         Block               ast_block;
         IdTypePair          ast_idtypepair;

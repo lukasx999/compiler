@@ -1,5 +1,14 @@
+
+defun func(foo'int, bar'str, baz'bool) -> int;
+
 defun main() -> int {
-    let mut foo'int = 45;
-    let foo'bool;
-    let foo'str;
+
+    let foo'int = 45;
+    foo = 32;
+
+    if foo == 45 {
+    } else {
+    }
+
+    ret 0;
 }
