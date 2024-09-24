@@ -1,3 +1,5 @@
 defun main() -> int {
     let mut foo'int = 45;
+    let foo'bool;
+    let foo'str;
 }

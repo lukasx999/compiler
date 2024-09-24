@@ -10,6 +10,8 @@ syntax match Keyword /ret/
 syntax match Keyword /if/
 syntax match Keyword /else/
 syntax match Keyword /elsif/
+syntax match Keyword /container/
+syntax match Keyword /defmethod/
 
 syntax match Type /int/
 syntax match Type /str/
@@ -17,7 +19,7 @@ syntax match Type /bool/
 syntax match Type /float/
 syntax match Type /void/
 
-syntax match PunctMinor /\;$/
+syntax match PunctMinor /;/
 syntax match PunctMinor /+/
 syntax match PunctMinor /-/
 syntax match PunctMinor /\*/

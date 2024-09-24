@@ -26,13 +26,13 @@ let mut baz'int;     # Create a mutable variable
 1+2-(3*4+(5/6))+7-8; # Complex Expressions
 
 # Types:
-1; # Integers
-1.0; # Floats
-true && false; # Bools
-nil; # Nil
+1;              # Integers
+1.0;            # Floats
+true && false;  # Booleans
 "Hello, World"; # Strings
 
-foo = 3; # Assignment
+foo = 3;                   # Assignment
+func().object.field = 45;  # Complex Assignment
 
 let foo'int = 45; # Integers
 let foo'bool = true; # Booleans
@@ -59,17 +59,32 @@ if 1 {}
 else {}
 
 # Functions
-# main function
-defun main (argc'int, args'str) -> int {
+
+defun main() -> int {
     ret 0; # Return a value
-    ret; # Return no value
 }
 
-defun func () -> void {
-    ret;
+defun func(foo'int, bar'str, baz'bool) -> void { # Function parameters
+    ret; # Return nothing
 }
+
+defun foo() {} # Implicit returntype of `void`
+
+# Function call
+foo();
+foo(45, bar, true);                           # With arguments
+class.method(arg, 3, true).closure().inner(); # Complex calls
 
 
 # Lambda function
 () -> void => {}
-(foo'int) -> int => { ret 5; }
+() => {}
+(foo'int, bar'str) -> int => { ret 5; }
+
+
+# OOP
+
+container foo {
+    let mut bar'int;
+    defmethod baz() -> void {}
+}

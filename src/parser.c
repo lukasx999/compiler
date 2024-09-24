@@ -605,6 +605,11 @@ AstNode *rule_function(Parser *p) {
             parser_throw_error(p, "expected returntype");
         ++p->current;
 
+
+
+
+
+
         AstNode *body = rule_block(p);
         if (body == NULL)
             parser_throw_error(p, "expected block");

@@ -101,6 +101,7 @@ enum TokenType {
 
     // TODO: modulus operator %
 
+    // do not set anything to `-1` as this is the value of `MATCH_SENTINEL`
 
     // ETC
     TOK_EOF,

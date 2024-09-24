@@ -7,7 +7,11 @@
 - [ ] fix this: if1 {} == if 1 {} or ret1 == ret 1
 - [ ] make assignment an expression
 - [ ] type checking pass
+- [ ] xor operator: )(
+- [ ] implicit tokens?
+- [ ] implicit void returntype (defun foo() {})
 - [ ] dollar as part of identifier of global variables?
+- [ ] function declarations (NULL pointer)
 - [ ] add info calls to repr
 - [ ] function calls
 - [ ] productions with multiple tokens (operator precedence)
