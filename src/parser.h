@@ -94,17 +94,19 @@ typedef struct {
 
 typedef struct {
     Token identifier, returntype;
-    AstNodeList arguments; // nodes == NULL if there are no arguments
+    AstNodeList parameters; // nodes == NULL if there are no parameters
     AstNode *body; // NULL if no body == declaration
 } StmtFunction;
 
 typedef struct {
     AstNode *expression;
+    // Token keyword; // TODO: this
 } StmtReturn;
 
 typedef struct {
     AstNode *condition;
-    AstNode *if_body;
+    AstNode *then_body;
+    // AstNodeList elseif_bodies; // TODO: this
     AstNode *else_body; // NULL, if there is none
 } StmtIf;
 

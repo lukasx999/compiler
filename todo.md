@@ -1,4 +1,7 @@
 # TODO
+- [ ] generic dynamic array
+- [ ] Better error handling with tokens
+- [ ] Remove Tokens from ast nodes?
 - [ ] tests
 - [ ] add preprocessor for macros and removing comments
 - [ ] string interpolation
@@ -33,6 +36,10 @@
 - [x] fix whitespace issues (eg: letfoo)
 - [x] unite all print functions in one file
 - [x] add static type checking (eg: let foo'int = 5;)
+- [x] Symbol Table datastructure
+ - stack of lists (temporary)
+ - stack w/ pushcount (temporary)
+ - **tree of lists** (every node has a pointer to the parent)
 
 # NOTES
 - which backend? (llvm-ir, qbe, nasm)

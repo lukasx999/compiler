@@ -75,18 +75,18 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
         case TYPE_IF: {
             PRINT_COLOR(COLOR_BLUE, "if");
             _rec_print_ast(root->ast_if.condition, ++level);
-            _rec_print_ast(root->ast_if.if_body,     level);
+            _rec_print_ast(root->ast_if.then_body,     level);
             _rec_print_ast(root->ast_if.else_body,   level);
         } break;
 
         case TYPE_FUNCTION: {
             printf("%sfunction: `%s` -> `%s`%s\n", COLOR_BLUE, root->ast_function.identifier.value, token_repr[root->ast_function.returntype.type], COLOR_END);
 
-            size_t size = root->ast_function.arguments.size;
+            size_t size = root->ast_function.parameters.size;
 
             level++;
             for (size_t i=0; i<size; ++i) {
-                AstNode *node = root->ast_function.arguments.nodes[i];
+                AstNode *node = root->ast_function.parameters.nodes[i];
                 _rec_print_ast(node, level);
             }
 

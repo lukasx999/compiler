@@ -13,7 +13,7 @@
 #include "lexer.h"
 #include "repr.h"
 #include "parser.h"
-#include "typechecking.h"
+#include "semantic_analysis.h"
 
 
 
@@ -85,11 +85,15 @@ void run_from_file(char *filename) {
     print_input(source);
 
     TokenList tokens = tokenize(source);
-    print_tokens_columns(tokens);
-    // print_tokens_stream(tokens);
+    print_tokens_stream(tokens);
+    // print_tokens_columns(tokens);
 
     AstNode *root = parse(tokens, filename);
     print_ast(root);
+
+
+    check_semantics(root);
+
 
 }
 
@@ -121,27 +125,7 @@ int main(int argc, char **argv) {
     // DEV
     } else {
 
-        // const char *input = "1+2*3";
-        // const char *input = "10.";
-        // const char *input = "()";
-        // const char *input = "(3+4)*(3+4)";
-        // const char *input = ")(";
-        // const char *input = "1+2+3";
-        // const char *input = "1==1==1";
-        // const char *input = "(1+2+(1-2))*3;";
-        // const char *input = "let foo_123 = (1.0+2)-'bar'*(-1);";
-        // const char *input = "1+2; 3+4;";
-        // const char *input = "letx = 5; let x = 5;";
-        // const char *input = "let x = 5+(-1); let y = 3; let z = \"foo\"; let foobarbaz; let x;";
-        // const char *input = "let foo'str = 5;";
-        // const char *input = "x+1;";
-        // const char *input = "let foo'int = 45;";
-        // const char *input = "let foo'str = \"hello, world\";";
-        // const char *input = "let foo'int = 4+5*(1/5+(1+(1+2))); foo = 45;";
-        // const char *input = "{ let foo'int = (5) + (-5); } {{}}";
         const char *input = "defun main() -> int {}";
-
-        // TODO: const char *input = "1);";
 
         print_input(input);
 
@@ -151,8 +135,6 @@ int main(int argc, char **argv) {
 
         AstNode *root = parse(tokens, "");
         print_ast(root);
-
-        check_types(root);
 
         // Datatype result = evaluate(root);
         // printf("=== EVAL: ===\ndouble: %lf\nbool: %d\nstring: %s\n", result.d_int, result.d_bool, result.d_string);

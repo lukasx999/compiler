@@ -10,6 +10,7 @@
 
 #include "lexer.h"
 
+#include "vector.h"
 
 
 void tokenlist_init(TokenList *tl) {
@@ -32,8 +33,6 @@ void tokenlist_append(TokenList *tl, Token new) {
 void tokenlist_free(TokenList *tl) {
     free(tl->tokens);
 }
-
-
 
 
 

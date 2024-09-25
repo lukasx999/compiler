@@ -9,12 +9,11 @@
 #include <stdarg.h>
 #include <setjmp.h>
 
-#include "lexer.h"
 #include "parser.h"
 #include "repr.h" // just for the colors
 
 
-jmp_buf jmp_env_globalscope;
+jmp_buf g_jmp_env;
 
 
 #define MAX_ERRORS 15
@@ -65,7 +64,7 @@ void parser_throw_error(Parser *p, const char *message) {
     fprintf(stderr, "%s\n", message);
     parser_synchronize(p);
 
-    longjmp(jmp_env_globalscope, 1); // return to global scope
+    longjmp(g_jmp_env, 1); // return to global scope
 
 }
 
@@ -516,7 +515,7 @@ AstNode *rule_if(Parser *p) {
                 parser_throw_error(p, "expected block after `else`!");
         }
 
-        StmtIf op = { .condition = expr, .if_body = if_block, .else_body = else_block };
+        StmtIf op = { .condition = expr, .then_body = if_block, .else_body = else_block };
         return ast_create_node(TYPE_IF, &op);
 
     }
@@ -618,7 +617,7 @@ AstNode *rule_function(Parser *p) {
         StmtFunction op = { .identifier = identifier,
                             .body       = body,
                             .returntype = returntype,
-                            .arguments  = arglist };
+                            .parameters  = arglist };
         return ast_create_node(TYPE_FUNCTION, &op);
 
     }
@@ -662,7 +661,7 @@ AstNode* rule_program(Parser *p) {
     AstNodeList statements;
     astnodelist_init(&statements);
 
-    setjmp(jmp_env_globalscope); // return to here if any errors occur
+    setjmp(g_jmp_env); // return to here if any errors occur
 
     while (!match_tokentypes(p, TOK_EOF, MATCH_SENTINEL)) {
         AstNode *new = rule_statement(p);
