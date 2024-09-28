@@ -1,18 +1,15 @@
 .PHONY: clean
 
 CC=gcc
-CPP=g++
-PYTHON=python
+PYTHON=python3
 EXTRAFLAGS=-Wno-unused-variable
 CFLAGS=-Wall -Wextra -std=c17 -pedantic -ggdb -O0 $(EXTRAFLAGS)
-CPPFLAGS=-Wall -Wextra -std=c++17 -ggdb -O0
 BIN=compiler
 TEST=test
 
 
 
-all: main.c lexer.c parser.c repr.c semantic_analysis.c vector.c
-	$(CPP) $(CPPFLAGS) -o pre preprocessor.cxx
+all: main.c lexer.c parser.c repr.c vector.c
 	$(PYTHON) getgrammar.py # Generate grammar from comments
 	$(CC) $(CFLAGS) -o $(BIN) $^
 

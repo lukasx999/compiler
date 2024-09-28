@@ -1,12 +1,1 @@
-
-
-defun foo(one'int, two'bool) -> void;
-
-defun main() -> int {
-
-    let mut foo'str = "hello, world";
-    foo = 45;
-
-
-    ret 0;
-}
+1+2;

@@ -86,6 +86,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
             level++;
             for (size_t i=0; i<size; ++i) {
+
                 AstNode *node = root->ast_function.parameters.nodes[i];
                 _rec_print_ast(node, level);
             }
@@ -137,6 +138,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
 
         default: {
+            printf("type: %s\n", token_repr[root->type]);
             assert(!"non-existant type");
         } break;
 
@@ -157,7 +159,7 @@ void print_input(const char *input) {
 }
 
 
-void print_tokens_columns(vec_Vector tokens) {
+void print_tokens_columns(TokenList tokens) {
 
     puts("\n\n\n=== TOKENS: ===\n");
 
@@ -197,7 +199,7 @@ void print_tokens_columns(vec_Vector tokens) {
 
 }
 
-void print_tokens_stream(vec_Vector tokens) {
+void print_tokens_stream(TokenList tokens) {
 
     puts("\n\n\n=== TOKENS: ===\n");
 

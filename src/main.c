@@ -13,7 +13,7 @@
 #include "lexer.h"
 #include "repr.h"
 #include "parser.h"
-#include "semantic_analysis.h"
+// #include "semantic_analysis.h"
 
 
 
@@ -43,7 +43,7 @@ void repl(void) {
 
         print_input(input);
 
-        vec_Vector tokens = tokenize(input);
+        TokenList tokens = tokenize(input);
         print_tokens_stream(tokens);
 
         AstNode *root = parse(tokens, "");
@@ -84,7 +84,7 @@ void run_from_file(char *filename) {
 
     print_input(source);
 
-    vec_Vector tokens = tokenize(source);
+    TokenList tokens = tokenize(source);
     print_tokens_stream(tokens);
     // print_tokens_columns(tokens);
 
@@ -92,7 +92,7 @@ void run_from_file(char *filename) {
     print_ast(root);
 
 
-    check_semantics(root);
+    // check_semantics(root);
 
 
 }
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
 
         print_input(input);
 
-        vec_Vector tokens = tokenize(input);
+        TokenList tokens = tokenize(input);
         print_tokens_columns(tokens);
         // print_tokens_stream(tokens);
 

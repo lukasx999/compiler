@@ -686,7 +686,7 @@ AstNode* rule_program(Parser *p) {
 //--------------------------------------------------------------------------------
 
 AstNode*
-parse(vec_Vector tokens, const char *filename) {
+parse(TokenList tokens, const char *filename) {
 
     Parser p = {
         .tokens = tokens,

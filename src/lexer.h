@@ -305,8 +305,10 @@ extern bool lexer_is_at_end(Lexer *l);
 // moves to the end of the next token and returns it
 extern Token lexer_next_token(Lexer *l, bool *skip_token);
 
+
+typedef vec_Vector TokenList;
 // turn a string of input source code into a list of tokens
-extern vec_Vector tokenize(const char *source);
+extern TokenList tokenize(const char *source);
 
 
 /* -- ------------------ -- */

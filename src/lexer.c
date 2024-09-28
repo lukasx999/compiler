@@ -457,7 +457,7 @@ Token lexer_next_token(Lexer *l, bool *skip_token) {
 
 
 
-vec_Vector tokenize(const char *source) {
+TokenList tokenize(const char *source) {
 
     vec_Vector tokenlist;
     vec_init(&tokenlist, sizeof(Token), 5, 2);
@@ -483,7 +483,7 @@ vec_Vector tokenize(const char *source) {
 
     }
 
-    // append eof token at the end
+    // Append eof token at the end
     // TODO: refactor this
     Token eof = { .type = TOK_EOF };
     calculate_token_position(&eof, source, lexer.pos);
