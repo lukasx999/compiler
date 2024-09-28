@@ -11,7 +11,8 @@ syntax match Keyword /if/
 syntax match Keyword /else/
 syntax match Keyword /elsif/
 syntax match Keyword /container/
-syntax match Keyword /defmethod/
+syntax match Keyword /create/
+syntax match Keyword /demolish/
 
 syntax match Type /int/
 syntax match Type /str/

@@ -106,11 +106,11 @@ ast_create_node(enum AstNode_type type, void *operation) {
         case TYPE_LITERAL:        new->ast_literal     = *(ExprLiteral*)         operation; break;
         case TYPE_GROUPING:       new->ast_grouping    = *(ExprGrouping*)        operation; break;
         case TYPE_ASSIGN:         new->ast_assign      = *(ExprAssign*)          operation; break;
+        case TYPE_CALL:           new->ast_call        = *(ExprCall*)            operation; break;
         case TYPE_VARDECLARATION: new->ast_vardecl     = *(StmtVarDeclaration*)  operation; break;
         case TYPE_IF:             new->ast_if          = *(StmtIf*)              operation; break;
         case TYPE_FUNCTION:       new->ast_function    = *(StmtFunction*)        operation; break;
         case TYPE_RETURN:         new->ast_return      = *(StmtReturn*)          operation; break;
-        case TYPE_PROGRAMROOT:    new->ast_programroot = *(ProgramRoot*)         operation; break;
         case TYPE_BLOCK:          new->ast_block       = *(Block*)               operation; break;
         case TYPE_IDTYPEPAIR:     new->ast_idtypepair  = *(IdTypePair*)          operation; break;
 
@@ -282,6 +282,38 @@ AstNode* rule_primary(Parser *p) {
 }
 
 
+AstNode* rule_call(Parser *p) {
+    // BNF: call -> primary ( "(" ( expression ( "," expression )* )? ")" )*
+
+    AstNode *new = rule_primary(p);
+
+    while (match_tokentypes(p, TOK_LPAREN, MATCH_SENTINEL)) {
+        ++p->current;
+
+        AstNodeList arglist;
+        astnodelist_init(&arglist);
+
+        if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL)) {
+
+            do {
+                AstNode *new = rule_expression(p);
+                astnodelist_append(&arglist, &new);
+            }
+            while (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL) && p->current++); // short-circuit!
+
+        } else
+            arglist.nodes = NULL;
+
+        ++p->current;
+        ExprCall op = { .callee = new, .arguments = arglist};
+        new = ast_create_node(TYPE_CALL, &op);
+
+    }
+
+    return new;
+
+}
+
 
 AstNode* rule_unary(Parser *p) {
     // BNF: unary -> ( "!" | "-" | "/" ) unary | primary
@@ -299,7 +331,7 @@ AstNode* rule_unary(Parser *p) {
         new = ast_create_node(TYPE_UNARYOP, &op);
 
     } else
-        new = rule_primary(p);
+        new = rule_call(p);
 
     return new;
 
@@ -428,7 +460,7 @@ AstNode* rule_block(Parser *p) {
 
         p->current++;
 
-        Block op = { list };
+        Block op = { .statements = list, .root = false };
         return ast_create_node(TYPE_BLOCK, &op);
 
     } else
@@ -553,7 +585,7 @@ AstNode *rule_return(Parser *p) {
 
 }
 
-AstNode *rule_function(Parser *p) {
+AstNode* rule_function(Parser *p) {
 // BNF: function -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE (body | ";")
 
     if (match_tokentypes(p, TOK_KEYWORD_DEFUN, MATCH_SENTINEL)) {
@@ -570,13 +602,13 @@ AstNode *rule_function(Parser *p) {
         ++p->current;
 
 
-        AstNodeList arglist;
-        astnodelist_init(&arglist);
+        AstNodeList paramlist;
+        astnodelist_init(&paramlist);
 
         if (match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL)) {
             while (1) {
                 AstNode *new = rule_idtype_pair(p);
-                astnodelist_append(&arglist, &new);
+                astnodelist_append(&paramlist, &new);
 
                 if (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL)) {
                     ++p->current;
@@ -585,7 +617,7 @@ AstNode *rule_function(Parser *p) {
                 else break;
             }
         }
-        else arglist.nodes = NULL;
+        else paramlist.nodes = NULL;
 
 
         if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
@@ -622,7 +654,7 @@ AstNode *rule_function(Parser *p) {
         StmtFunction op = { .identifier = identifier,
                             .body       = body,
                             .returntype = returntype,
-                            .parameters  = arglist };
+                            .parameters  = paramlist };
         return ast_create_node(TYPE_FUNCTION, &op);
 
     }
@@ -673,8 +705,8 @@ AstNode* rule_program(Parser *p) {
         astnodelist_append(&statements, &new);
     }
 
-    ProgramRoot root = { statements };
-    AstNode *node = ast_create_node(TYPE_PROGRAMROOT, &root);
+    Block root = { .statements = statements, .root = true };
+    AstNode *node = ast_create_node(TYPE_BLOCK, &root);
     return node;
 
 }

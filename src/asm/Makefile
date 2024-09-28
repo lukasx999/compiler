@@ -1,4 +1,4 @@
-all: fork.asm
+all: mod1.asm
 	# gdb: info registers => i r
 	# i r <register>
 	nasm $^ -felf64 -o main.o -g -F dwarf

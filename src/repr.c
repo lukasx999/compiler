@@ -11,6 +11,15 @@
 
 
 
+static void print_indent(uint32_t level) {
+
+    int _level = level * AST_PRINT_SPACING;
+    while(_level--)
+        printf("%s%s%s", COLOR_GRAY, AST_SEPERATOR, COLOR_END);
+
+}
+
+
 static void _rec_print_ast(AstNode *root, uint32_t level) {
 
     if (root == NULL) return;
@@ -28,7 +37,8 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
     // statements: blue, bold
     // literals:   gray
     // groupings:  yellow
-    // blocks:     yellow
+    // blocks:     purple
+    // (labels):   green
 
 
 
@@ -68,19 +78,40 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
             if (root->ast_vardecl.mutable)
                 mutable_str = "(mutable)";
 
-            printf("%svardecl: `%s` of `%s` %s%s\n", COLOR_BLUE, root->ast_vardecl.idtypepair->ast_idtypepair.identifier.value, token_repr[root->ast_vardecl.idtypepair->ast_idtypepair.type.type], mutable_str, COLOR_END);
+            printf("%svardecl %s%s%s\n", COLOR_BLUE, COLOR_WHITE, mutable_str, COLOR_END);
+
+            print_indent(++level);
+            printf("%s(target)%s\n", COLOR_GREEN, COLOR_END);
+            _rec_print_ast(root->ast_vardecl.idtypepair, ++level);
+
+            print_indent(--level);
+            printf("%s(value)%s\n", COLOR_GREEN, COLOR_END);
             _rec_print_ast(root->ast_vardecl.value, ++level);
         } break;
 
         case TYPE_IF: {
-            PRINT_COLOR(COLOR_BLUE, "if");
+            PRINT_COLOR(COLOR_BLUE, "conditional-if");
+
+            print_indent(++level);
+            printf("%s(condition)%s\n", COLOR_GREEN, COLOR_END);
             _rec_print_ast(root->ast_if.condition, ++level);
-            _rec_print_ast(root->ast_if.then_body,     level);
-            _rec_print_ast(root->ast_if.else_body,   level);
+
+            print_indent(--level);
+            level++;
+            printf("%s(then-body)%s\n", COLOR_GREEN, COLOR_END);
+            _rec_print_ast(root->ast_if.then_body, level);
+
+            print_indent(--level);
+            level++;
+            printf("%s(else-body)%s\n", COLOR_GREEN, COLOR_END);
+            _rec_print_ast(root->ast_if.else_body, level);
         } break;
 
         case TYPE_FUNCTION: {
-            printf("%sfunction: `%s` -> `%s`%s\n", COLOR_BLUE, root->ast_function.identifier.value, token_repr[root->ast_function.returntype.type], COLOR_END);
+            printf("%sfunction %s(`%s` -> `%s`)%s\n", COLOR_BLUE, COLOR_WHITE, root->ast_function.identifier.value, token_repr[root->ast_function.returntype.type], COLOR_END);
+
+            print_indent(++level);
+            printf("%s(parameters)%s\n", COLOR_GREEN, COLOR_END);
 
             size_t size = root->ast_function.parameters.size;
 
@@ -91,8 +122,11 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
                 _rec_print_ast(node, level);
             }
 
+            print_indent(--level);
+            printf("%s(body)%s\n", COLOR_GREEN, COLOR_END);
+
             AstNode *node = root->ast_function.body;
-            _rec_print_ast(node, level);
+            _rec_print_ast(node, ++level);
         } break;
 
         case TYPE_RETURN: {
@@ -102,25 +136,38 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
         case TYPE_ASSIGN: {
             printf("%sassign%s\n", COLOR_BLUE, COLOR_END);
+
+            print_indent(++level);
+            printf("%s(target)%s\n", COLOR_GREEN, COLOR_END);
             _rec_print_ast(root->ast_assign.identifier, ++level);
-            _rec_print_ast(root->ast_assign.value, level);
+
+            print_indent(--level);
+            printf("%s(value)%s\n", COLOR_GREEN, COLOR_END);
+            _rec_print_ast(root->ast_assign.value, ++level);
         } break;
 
-        case TYPE_PROGRAMROOT: {
-            printf("%s%s%s\n", COLOR_UNDERLINE, "root", COLOR_END);
+        case TYPE_CALL: {
+            printf("%scall%s\n", COLOR_BLUE, COLOR_END);
 
-            size_t size = root->ast_programroot.statements.size;
+            print_indent(++level);
+            printf("%s(callee)%s\n", COLOR_GREEN, COLOR_END);
+            _rec_print_ast(root->ast_call.callee, ++level);
 
+            print_indent(--level);
+            printf("%s(arguments)%s\n", COLOR_GREEN, COLOR_END);
+            size_t size = root->ast_call.arguments.size;
             level++;
             for (size_t i=0; i<size; ++i) {
-                AstNode *node = root->ast_programroot.statements.nodes[i];
+                AstNode *node = root->ast_call.arguments.nodes[i];
                 _rec_print_ast(node, level);
             }
-
         } break;
 
         case TYPE_BLOCK: {
-            printf("%s%s%s\n", COLOR_PURPLE_HIGH, "block", COLOR_END);
+            const char *str = "block";
+            if (root->ast_block.root) str = "root";
+
+            printf("%s%s%s\n", COLOR_PURPLE_HIGH, str, COLOR_END);
 
             size_t size = root->ast_block.statements.size;
 

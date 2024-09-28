@@ -18,4 +18,5 @@ comparison          -> term ( ( ">" | ">=" | "<" | "<=" ) term )*
 term                -> factor ( ( "-" | "+" ) factor )*
 factor              -> unary ( ( "/" | "*" ) unary )*
 unary               -> ( "!" | "-" | "/" ) unary | primary
+call                -> primary ( "(" ( expression ( "," expression )* )? ")" )*
 primary             -> "true" | "false" | "nil" | NUMBER | STRING | "(" expression ")" | IDENTIFIER

@@ -1,5 +1,5 @@
 # TODO
-- [ ] generic dynamic array
+- [ ] convert grammar to real BNF
 - [ ] Better error handling with tokens
 - [ ] Remove Tokens from ast nodes?
 - [ ] tests
@@ -7,7 +7,6 @@
 - [ ] string interpolation
 - [ ] inline assembly
 - [ ] add comments to lexer
-- [ ] type checking pass
 - [ ] xor operator: )(
 - [ ] warning if not using `$` for globals
 - [ ] implicit tokens?
@@ -37,6 +36,7 @@
 - [x] fix whitespace issues (eg: letfoo)
 - [x] unite all print functions in one file
 - [x] add static type checking (eg: let foo'int = 5;)
+- [x] generic dynamic array
 - [x] Symbol Table datastructure
  - stack of lists (temporary)
  - stack w/ pushcount (temporary)

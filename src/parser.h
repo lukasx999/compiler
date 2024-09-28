@@ -17,7 +17,18 @@
 
 
 
+
 typedef struct AstNode AstNode; // forward reference
+
+
+
+// this lets a node point to multiple nodes, not just 1 or 2
+typedef struct {
+    size_t capacity, size;
+    AstNode **nodes;
+} AstNodeList;
+
+
 
 /* -- EXPRESSIONS -- */
 
@@ -44,6 +55,12 @@ typedef struct {
     AstNode *value;
 } ExprAssign;
 
+typedef struct {
+    AstNode *callee;
+    // Token rparen;
+    AstNodeList arguments;
+} ExprCall;
+
 
 /* -- ----------- -- */
 
@@ -51,13 +68,6 @@ typedef struct {
 /* -- STATEMENTS -- */
 
 /* ETC */
-
-// this lets a node point to multiple nodes, not just 1 or 2
-typedef struct {
-    size_t capacity, size;
-    AstNode **nodes;
-} AstNodeList;
-
 
 // stores an identifier and a datatype as a pair
 // eg: let x'int;
@@ -72,15 +82,10 @@ typedef struct {
 /* --------- */
 
 
-typedef struct {
-    AstNodeList statements; // (dynamic) array containing a sequence of statements
-} ProgramRoot;
-
-
 // statement sequence { ... } => scope
 typedef struct {
-    // TODO: Refactor this into a Block
-    AstNodeList statements;
+    AstNodeList statements; // (dynamic) array containing a sequence of statements
+    bool root;
 } Block;
 
 
@@ -118,11 +123,11 @@ struct AstNode { // tagged union
 
     enum AstNode_type {
         // EXPRs
-        TYPE_BINARYOP, TYPE_UNARYOP, TYPE_LITERAL, TYPE_GROUPING,
+        TYPE_BINARYOP, TYPE_UNARYOP, TYPE_LITERAL, TYPE_GROUPING, TYPE_CALL,
         // STMTs
         TYPE_VARDECLARATION, TYPE_ASSIGN, TYPE_IF, TYPE_FUNCTION, TYPE_RETURN,
         // ETC
-        TYPE_PROGRAMROOT, TYPE_IDTYPEPAIR, TYPE_BLOCK,
+        TYPE_IDTYPEPAIR, TYPE_BLOCK,
     } type;
 
     union {
@@ -131,11 +136,11 @@ struct AstNode { // tagged union
         ExprLiteral         ast_literal;
         ExprGrouping        ast_grouping;
         ExprAssign          ast_assign;
+        ExprCall            ast_call;
         StmtVarDeclaration  ast_vardecl;
         StmtIf              ast_if;
         StmtFunction        ast_function;
         StmtReturn          ast_return;
-        ProgramRoot         ast_programroot;
         Block               ast_block;
         IdTypePair          ast_idtypepair;
     };

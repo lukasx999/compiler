@@ -13,7 +13,7 @@
 
 #define TOKENS_COLPOS 12
 
-#define AST_PRINT_SPACING 3
+#define AST_PRINT_SPACING 1
 #define AST_SEPERATOR     "⋅"
 
 #define COLOR_RED         "\33[31m"

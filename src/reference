@@ -76,8 +76,8 @@ defun foo() {} # Implicit returntype `void`
 
 # Function call
 foo();
-foo(45, bar, true);                           # With arguments
-class.method(arg, 3, true).closure().inner(); # Complex calls
+foo(45, bar, true);                                            # With arguments
+class.method(arg, 3, true).closure().inner(true, 1, 2, 3)()(); # Complex calls
 
 
 # Lambda function
@@ -89,7 +89,16 @@ class.method(arg, 3, true).closure().inner(); # Complex calls
 # OOP
 
 container foo {
-    let mut bar'int;
-    defmethod baz() -> void {}
-    defmethod foo() {} # Constructor
+    let mut a'int;              # Variables
+    defun foo() -> void {       # Constructor
+    }
+    defun bar(arg'int) -> int { # Method
+    ret 45;
+    }
 }
+
+
+let mut object'foo = create foo();  # Creating an object
+foo.a;                              # Accessing members
+let result'int = foo.bar(3);        # Calling methods
+demolish object;                    # Destroying an object

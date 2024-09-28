@@ -13,6 +13,7 @@
 #include "lexer.h"
 #include "repr.h"
 #include "parser.h"
+#include "codegen.h"
 // #include "semantic_analysis.h"
 
 
@@ -90,6 +91,8 @@ void run_from_file(char *filename) {
 
     AstNode *root = parse(tokens, filename);
     print_ast(root);
+
+    // compile(root);
 
 
     // check_semantics(root);
