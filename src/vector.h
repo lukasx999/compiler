@@ -8,30 +8,26 @@
 
 
 
-// Functions: vector_<T>_<func>
-// Struct: Vector_<T>
-#define MAKE_VECTOR(T)                                         \
-                                                               \
-typedef struct {                                               \
-    size_t capacity, size;                                     \
-    T *data;                                                   \
-} Vector_##T;                                                  \
-                                                               \
-void vector_##T##_init(Vector_##T *v) {                        \
-    v->size = 0;                                               \
-    v->capacity = 5;                                           \
-    v->data = malloc(sizeof(T));                               \
-}                                                              \
-                                                               \
-void vector_##T##_append(Vector_##T *v, T data) {              \
-                                                               \
-    if (v->size+1 == v->capacity) {                            \
-        v->capacity *= 2;                                      \
-        v->data = realloc(v->data, v->capacity * sizeof(T));   \
-    }                                                          \
-                                                               \
-    v->data[v->size++] = data;                                 \
-}
+typedef char vec_Blob; // pointer arithmetic on voidptrs is undefined => increment by 1 byte via char
+
+typedef struct {
+    size_t capacity,
+           size,
+           element_size,
+           growth_rate;
+
+    vec_Blob *_blob; // using char* instead of void* for pointer arith
+
+} vec_Vector;
+
+extern void  vec_init          (vec_Vector *v, size_t element_size, size_t start_capacity, size_t growth_rate);
+extern void  vec_push          (vec_Vector *v, void *value);
+extern void* vec_get           (vec_Vector *v, size_t index);
+extern void  vec_set           (vec_Vector *v, size_t index, void *value);
+extern void  vec_delete        (vec_Vector *v, size_t index);
+extern void  vec_insert_before (vec_Vector *v, size_t index, void *value);
+extern void  vec_insert_after  (vec_Vector *v, size_t index, void *value);
+extern void* vec_pop           (vec_Vector *v);
 
 
 

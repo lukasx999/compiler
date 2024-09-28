@@ -26,6 +26,7 @@
 - [ ] operator ")("
 - [ ] evaluating expressions at compile time?
 - [ ] find a name for the language
+ - goddamn js frameworks
 - [ ] sophisticated Nvim plugin for syntax highlighting
 - [x] make assignment an expression
 - [x] fix this: if1 {} == if 1 {} or ret1 == ret 1

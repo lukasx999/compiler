@@ -165,12 +165,10 @@ void print_tokens_columns(vec_Vector tokens) {
 
     for (size_t i=0; i<tokens.size; ++i) {
 
-        Token token = *(Token*) vec_get(&tokens, i);
-
-        enum TokenType type = token.type;
-        char *value = token.value;
-        size_t column = token.column;
-        size_t line = token.line_number;
+        enum TokenType type = tokens.tokens[i].type;
+        char *value = tokens.tokens[i].value;
+        size_t column = tokens.tokens[i].column;
+        size_t line = tokens.tokens[i].line_number;
 
 
 
@@ -197,15 +195,13 @@ void print_tokens_columns(vec_Vector tokens) {
 
 }
 
-void print_tokens_stream(vec_Vector tokens) {
+void print_tokens_stream(TokenList tokens) {
 
     puts("\n\n\n=== TOKENS: ===\n");
 
     for (size_t i=0; i<tokens.size; ++i) {
-
-        Token token = *(Token*) vec_get(&tokens, i);
-        enum TokenType type = token.type;
-        char *value = token.value;
+        enum TokenType type = tokens.tokens[i].type;
+        char *value = tokens.tokens[i].value;
 
         printf("(%s%s%s", COLOR_CYAN, token_repr[type], COLOR_END);
 

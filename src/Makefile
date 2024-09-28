@@ -11,7 +11,7 @@ TEST=test
 
 
 
-all: main.c lexer.c parser.c repr.c semantic_analysis.c
+all: main.c lexer.c parser.c repr.c semantic_analysis.c vector.c
 	$(CPP) $(CPPFLAGS) -o pre preprocessor.cxx
 	$(PYTHON) getgrammar.py # Generate grammar from comments
 	$(CC) $(CFLAGS) -o $(BIN) $^

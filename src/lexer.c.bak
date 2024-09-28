@@ -13,6 +13,29 @@
 
 
 
+void tokenlist_init(TokenList *tl) {
+    tl->cap = 5;
+    tl->size = 0;
+    tl->tokens = malloc(tl->cap * sizeof (Token));
+}
+
+void tokenlist_append(TokenList *tl, Token new) {
+
+    if (tl->size+1 == tl->cap) {
+        tl->cap *= 2;
+        tl->tokens = realloc(tl->tokens, tl->cap * sizeof (Token));
+    }
+
+    tl->tokens[tl->size++] = new;
+
+}
+
+void tokenlist_free(TokenList *tl) {
+    free(tl->tokens);
+}
+
+
+
 
 // Helper functions
 
@@ -457,10 +480,10 @@ Token lexer_next_token(Lexer *l, bool *skip_token) {
 
 
 
-vec_Vector tokenize(const char *source) {
+TokenList tokenize(const char *source) {
 
-    vec_Vector tokenlist;
-    vec_init(&tokenlist, sizeof(Token), 5, 2);
+    TokenList tokens;
+    tokenlist_init(&tokens);
 
     Lexer lexer = {
         .src = source,
@@ -479,7 +502,7 @@ vec_Vector tokenize(const char *source) {
         new.length = lexer.pos - token_start;
 
         if (skip_token) continue;
-        vec_push(&tokenlist, &new);
+        tokenlist_append(&tokens, new);
 
     }
 
@@ -488,9 +511,8 @@ vec_Vector tokenize(const char *source) {
     Token eof = { .type = TOK_EOF };
     calculate_token_position(&eof, source, lexer.pos);
     memset(eof.value, 0, BUFSIZE);
-    vec_push(&tokenlist, &eof);
+    tokenlist_append(&tokens, eof);
 
-
-    return tokenlist;
+    return tokens;
 
 }

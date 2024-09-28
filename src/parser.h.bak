@@ -153,14 +153,14 @@ extern void ast_free_nodes (AstNode *root);
 /* -- State of the Parser -- */
 
 typedef struct {
-    vec_Vector tokens;     // dynamic array of tokens
+    TokenList tokens;     // dynamic array of tokens
     size_t current;       // current token index
     const char *filename; // if empty -> repl
     uint32_t error_count; // if 0 -> no errors
 } Parser;
 
 extern Token    parser_get_current_token (Parser *p);
-extern AstNode* parse (vec_Vector tokens, const char *filename); // returns NULL when there are no tokens to be parsed
+extern AstNode* parse (TokenList tokens, const char *filename); // returns NULL when there are no tokens to be parsed
 
 
 /* -- Productions (rules) for the grammar -- */

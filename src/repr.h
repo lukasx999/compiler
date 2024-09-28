@@ -41,8 +41,8 @@
 
 
 extern void print_input          (const char *input);
-extern void print_tokens_columns (TokenList tokens);
-extern void print_tokens_stream  (TokenList tokens);
+extern void print_tokens_columns (vec_Vector tokens);
+extern void print_tokens_stream  (vec_Vector tokens);
 extern void print_ast            (AstNode *root);
 
 

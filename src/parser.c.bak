@@ -172,12 +172,7 @@ void ast_free_nodes(AstNode *root) {
 
 
 Token parser_get_current_token(Parser *p) {
-    // return p->tokens.tokens[p->current];
-    return *(Token*) vec_get(&p->tokens, p->current);
-}
-
-Token parser_get_token_by_index(Parser *p, size_t index) {
-    return *(Token*) vec_get(&p->tokens, index);
+    return p->tokens.tokens[p->current];
 }
 
 void parser_synchronize(Parser *p) {
@@ -185,12 +180,12 @@ void parser_synchronize(Parser *p) {
 
     size_t new = 0;
     for (size_t i=p->current; i<p->tokens.size; ++i) {
-        if (parser_get_token_by_index(p, i).type == TOK_SEMICOLON) {
+        if (p->tokens.tokens[i].type == TOK_SEMICOLON) {
             new = i;
             break;
         }
         // no more statements to parse
-        else if (parser_get_token_by_index(p, i).type == TOK_EOF)
+        else if (p->tokens.tokens[i].type == TOK_EOF)
             parser_exit_errors(p);
 
     }
@@ -686,7 +681,7 @@ AstNode* rule_program(Parser *p) {
 //--------------------------------------------------------------------------------
 
 AstNode*
-parse(vec_Vector tokens, const char *filename) {
+parse(TokenList tokens, const char *filename) {
 
     Parser p = {
         .tokens = tokens,

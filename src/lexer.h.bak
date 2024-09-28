@@ -9,8 +9,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "vector.h"
-
 #define BUFSIZE 100
 #define GET_ARRAY_SIZE(array) (sizeof((array)) / sizeof(*(array)))
 
@@ -284,6 +282,28 @@ extern void calculate_token_position(Token *new, const char *src, size_t pos);
 
 
 
+
+/* -- Dynamic Array to store tokens -- */
+
+typedef struct {
+
+    size_t cap;
+    size_t size;  // always one more than actual index
+    Token *tokens;
+
+} TokenList;
+
+
+extern void tokenlist_init  (TokenList *tl),
+            tokenlist_append(TokenList *tl, Token new),
+            tokenlist_free  (TokenList *tl);
+
+/* -- ----------------------------- -- */
+
+
+
+
+
 /* -- State of the Lexer -- */
 
 
@@ -306,7 +326,7 @@ extern bool lexer_is_at_end(Lexer *l);
 extern Token lexer_next_token(Lexer *l, bool *skip_token);
 
 // turn a string of input source code into a list of tokens
-extern vec_Vector tokenize(const char *source);
+extern TokenList tokenize(const char *source);
 
 
 /* -- ------------------ -- */
