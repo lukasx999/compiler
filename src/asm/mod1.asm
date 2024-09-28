@@ -1,3 +1,8 @@
+
+
+    extern foo
+
+
     section .text
 
 global main
@@ -10,6 +15,8 @@ main:
     mov rsi, str
     mov rdx, len
     syscall
+
+    call foo
 
     mov rax, 0
     pop rbp

@@ -1,6 +1,2 @@
 defun main() -> void {
-
-    let mut foo'int = main();
-
-    ret 0;
 }

@@ -10,7 +10,7 @@
 #include <setjmp.h>
 
 #include "parser.h"
-#include "repr.h" // just for the colors
+#include "colors.h"
 
 
 jmp_buf g_jmp_env;
@@ -55,15 +55,40 @@ void parser_throw_error(Parser *p, const char *message) {
     if (p->error_count >= MAX_ERRORS) parser_exit_errors(p);
     ++p->error_count;
 
-
     Token current = parser_get_current_token(p);
-    fprintf(stderr, "%s:%lu:%lu: ", p->filename, current.line_number, current.column);
-
+    fprintf(stderr, "%s%s%s:%lu:%lu: %s", COLOR_BOLD, COLOR_WHITE, p->filename, current.line_number, current.column, COLOR_END);
     fprintf(stderr, "%s%sERROR: %s", COLOR_RED, COLOR_BOLD, COLOR_END);
-
     fprintf(stderr, "%s\n", message);
-    parser_synchronize(p);
 
+    // TODO: experimental:
+
+    size_t pos = current.absolute_pos - 1;
+    size_t len = current.length;
+    char buf[BUFSIZE] = { 0 };
+
+    fprintf(stderr, "%s   %lu %s|\t", COLOR_WHITE, current.line_number, COLOR_END);
+
+    size_t offset = 0;
+    for (size_t i=pos ;; --i) {
+        if (p->source[i] == '\n') {
+            offset = i+1; // +1 to get rid of newline at the beginning
+            break;
+        }
+    }
+
+    strncpy(buf, p->source+offset, pos-offset);
+    fprintf(stderr, "%s", buf);
+
+    memset(buf, 0, BUFSIZE);
+    strncpy(buf, p->source+pos, len),
+    fprintf(stderr, "%s%s%s%s%s", COLOR_RED, COLOR_ITALIC, COLOR_STRIKETHROUGH, buf, COLOR_END);
+
+    memset(buf, 0, BUFSIZE);
+    strncpy(buf, p->source+pos+len, strcspn(p->source+pos+len, "\n"));
+    fprintf(stderr, "%s\n\n", buf);
+
+
+    parser_synchronize(p);
     longjmp(g_jmp_env, 1); // return to global scope
 
 }
@@ -304,6 +329,9 @@ AstNode* rule_call(Parser *p) {
         } else
             arglist.nodes = NULL;
 
+        if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
+            parser_throw_error(p, "closing paren missing");
+
         ++p->current;
         ExprCall op = { .callee = new, .arguments = arglist};
         new = ast_create_node(TYPE_CALL, &op);
@@ -399,10 +427,6 @@ AstNode* rule_expression(Parser *p) {
 
 
 /* -- ----------- -- */
-
-
-
-
 
 
 
@@ -526,6 +550,7 @@ AstNode* rule_exprstatement(Parser *p) {
     // check for semicolon
     if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
         parser_throw_error(p, "expected semicolon");
+
     p->current++;
 
     return new;
@@ -718,10 +743,11 @@ AstNode* rule_program(Parser *p) {
 //--------------------------------------------------------------------------------
 
 AstNode*
-parse(TokenList tokens, const char *filename) {
+parse(TokenList tokens, char *source, const char *filename) {
 
     Parser p = {
         .tokens = tokens,
+        .source = source,
         .current = 0,
         .filename = filename,
         .error_count = 0,

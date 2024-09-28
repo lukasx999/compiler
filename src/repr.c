@@ -90,7 +90,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
         } break;
 
         case TYPE_IF: {
-            PRINT_COLOR(COLOR_BLUE, "conditional-if");
+            PRINT_COLOR(COLOR_BLUE, "if");
 
             print_indent(++level);
             printf("%s(condition)%s\n", COLOR_GREEN, COLOR_END);

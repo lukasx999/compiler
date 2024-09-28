@@ -245,8 +245,8 @@ static char token_repr[][BUFSIZE] = {
     [TOK_LITERAL_TRUE]          = "true",
     [TOK_LITERAL_FALSE]         = "false",
     [TOK_LITERAL_NIL]           = "nil",
-    [TOK_LITERAL_STRING]        = "string",
-    [TOK_LITERAL_INTEGER]       = "integer",
+    [TOK_LITERAL_STRING]        = "str",
+    [TOK_LITERAL_INTEGER]       = "int",
     [TOK_LITERAL_FLOAT]         = "float",
     [TOK_LITERAL_IDENTIFIER]    = "identifier",
 

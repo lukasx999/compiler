@@ -159,6 +159,7 @@ extern void ast_free_nodes (AstNode *root);
 
 typedef struct {
     TokenList tokens;     // dynamic array of tokens
+    char *source;         // source code: for errors
     size_t current;       // current token index
     const char *filename; // if empty -> repl
     uint32_t error_count; // if 0 -> no errors
@@ -166,7 +167,7 @@ typedef struct {
 
 extern Token    parser_get_current_token (Parser *p);
 extern Token    parser_get_token_by_index(Parser *p, size_t index);
-extern AstNode* parse (TokenList tokens, const char *filename); // returns NULL when there are no tokens to be parsed
+extern AstNode* parse(TokenList tokens, char *source, const char *filename); // returns NULL when there are no tokens to be parsed
 
 
 /* -- Productions (rules) for the grammar -- */

@@ -9,9 +9,9 @@ TEST=test
 
 
 
-all: main.c lexer.c parser.c repr.c vector.c codegen.c
+all: main.c lexer.c parser.c repr.c extra/vector.c codegen.c
 	$(PYTHON) getgrammar.py # Generate grammar from comments
-	$(CC) $(CFLAGS) -o $(BIN) $^
+	$(CC) $(CFLAGS) -o $(BIN) $^ -I./extra
 
 %.o: %.c
 	$(CC) -o $@ $(CFLAGS) -c $<

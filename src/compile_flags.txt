@@ -2,3 +2,4 @@
 #-Wextra
 #-std=c17
 #-pedantic
+-I./extra

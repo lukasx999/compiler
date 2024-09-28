@@ -47,7 +47,7 @@ void repl(void) {
         TokenList tokens = tokenize(input);
         print_tokens_stream(tokens);
 
-        AstNode *root = parse(tokens, "");
+        AstNode *root = parse(tokens, input, "");
         print_ast(root);
 
     }
@@ -89,7 +89,7 @@ void run_from_file(char *filename) {
     print_tokens_stream(tokens);
     // print_tokens_columns(tokens);
 
-    AstNode *root = parse(tokens, filename);
+    AstNode *root = parse(tokens, source, filename);
     print_ast(root);
 
     // compile(root);
@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
         print_tokens_columns(tokens);
         // print_tokens_stream(tokens);
 
-        AstNode *root = parse(tokens, "");
+        AstNode *root = parse(tokens, (char*)input, "");
         print_ast(root);
 
         // Datatype result = evaluate(root);

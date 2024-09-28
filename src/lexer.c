@@ -170,59 +170,21 @@ Token lexer_next_token(Lexer *l, bool *skip_token) {
             *skip_token = true;
             break;
 
-        case PUNCT_SINGLEQUOTE:
-            new.type = TOK_SINGLEQUOTE;
-            break;
-
-        case PUNCT_DOT:
-            new.type = TOK_DOT;
-            break;
-
-        case PUNCT_ASTERISK:
-            new.type = TOK_BIN_ASTERISK;
-            break;
-
-        case PUNCT_SEMICOLON:
-            new.type = TOK_SEMICOLON;
-            break;
-
-        case PUNCT_COMMA:
-            new.type = TOK_COMMA;
-            break;
-
-        case PUNCT_LPAREN:
-            new.type = TOK_LPAREN;
-            break;
-
-        case PUNCT_RPAREN:
-            new.type = TOK_RPAREN;
-            break;
-
-        case PUNCT_LBRACE:
-            new.type = TOK_LBRACE;
-            break;
-
-        case PUNCT_RBRACE:
-            new.type = TOK_RBRACE;
-            break;
-
-        case PUNCT_LBRACKET:
-            new.type = TOK_LBRACKET;
-            break;
-
-        case PUNCT_RBRACKET:
-            new.type = TOK_RBRACKET;
-            break;
-
-        case PUNCT_SLASH:
-            new.type = TOK_BIN_UNR_SLASH;
-            break;
-
-
+        case PUNCT_SINGLEQUOTE: new.type = TOK_SINGLEQUOTE;   break;
+        case PUNCT_DOT:         new.type = TOK_DOT;           break;
+        case PUNCT_ASTERISK:    new.type = TOK_BIN_ASTERISK;  break;
+        case PUNCT_SEMICOLON:   new.type = TOK_SEMICOLON;     break;
+        case PUNCT_COMMA:       new.type = TOK_COMMA;         break;
+        case PUNCT_LPAREN:      new.type = TOK_LPAREN;        break;
+        case PUNCT_RPAREN:      new.type = TOK_RPAREN;        break;
+        case PUNCT_LBRACE:      new.type = TOK_LBRACE;        break;
+        case PUNCT_RBRACE:      new.type = TOK_RBRACE;        break;
+        case PUNCT_LBRACKET:    new.type = TOK_LBRACKET;      break;
+        case PUNCT_RBRACKET:    new.type = TOK_RBRACKET;      break;
+        case PUNCT_SLASH:       new.type = TOK_BIN_UNR_SLASH; break;
 
 
         // DOUBLE CHAR SYMBOLS
-
         case PUNCT_AMPERSAND: {
             if (lexer_lookahead(l, PUNCT_AMPERSAND)) {
                 new.type = TOK_BIN_LOGICAL_AND;
@@ -460,7 +422,7 @@ Token lexer_next_token(Lexer *l, bool *skip_token) {
 TokenList tokenize(const char *source) {
 
     vec_Vector tokenlist;
-    vec_init(&tokenlist, sizeof(Token), 5, 2);
+    vec_init(&tokenlist, sizeof(Token), 10, 2);
 
     Lexer lexer = {
         .src = source,
@@ -484,7 +446,6 @@ TokenList tokenize(const char *source) {
     }
 
     // Append eof token at the end
-    // TODO: refactor this
     Token eof = { .type = TOK_EOF };
     calculate_token_position(&eof, source, lexer.pos);
     memset(eof.value, 0, BUFSIZE);
