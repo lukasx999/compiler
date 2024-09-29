@@ -78,16 +78,11 @@ typedef struct {
 } IdTypePair;
 
 
-
-/* --------- */
-
-
 // statement sequence { ... } => scope
 typedef struct {
     AstNodeList statements; // (dynamic) array containing a sequence of statements
     bool root;
 } Block;
-
 
 
 /* -- STATEMENTS -- */
