@@ -82,7 +82,6 @@ char* read_file(char *filename) {
 void run_from_file(char *filename) {
 
     char *source = read_file(filename);
-
     print_input(source);
 
     TokenList tokens = tokenize(source);
@@ -93,35 +92,20 @@ void run_from_file(char *filename) {
     print_ast(root);
 
     // compile(root);
-
-
     // check_semantics(root);
-
 
 }
 
 
-
-
-
-
 int main(int argc, char **argv) {
-
-
-    // int childpid = fork();
-    // if (childpid == 0) {
-    //     execlp("sbcl", "sbcl", "--script", "preprocessor.lisp", (char*) NULL);
-    // }
-    // waitpid(childpid, NULL, 0);
-
 
     // REPL
     if (argc == 2 && !strcmp(argv[1], "repl"))
         repl();
 
     // RUN FROM FILE
-    else if (argc == 3 && !strcmp(argv[1], "file")) {
-        char *filename = argv[2];
+    else if (argc == 2) {
+        char *filename = argv[1];
         run_from_file(filename);
         exit(0);
 
@@ -129,22 +113,13 @@ int main(int argc, char **argv) {
     } else {
 
         const char *input = "defun main() -> int {}";
-
         print_input(input);
 
         TokenList tokens = tokenize(input);
         print_tokens_columns(tokens);
-        // print_tokens_stream(tokens);
 
         AstNode *root = parse(tokens, (char*)input, "");
         print_ast(root);
-
-        // Datatype result = evaluate(root);
-        // printf("=== EVAL: ===\ndouble: %lf\nbool: %d\nstring: %s\n", result.d_int, result.d_bool, result.d_string);
-
-        // cleanup
-        // ast_free_nodes(root);
-        // tokenlist_free(&tokens);
 
     }
 

@@ -61,6 +61,7 @@ void parser_throw_error(Parser *p, const char *message) {
     fprintf(stderr, "%s\n", message);
 
     // TODO: experimental:
+    #if 0
 
     size_t pos = current.absolute_pos - 1;
     size_t len = current.length;
@@ -86,6 +87,7 @@ void parser_throw_error(Parser *p, const char *message) {
     memset(buf, 0, BUFSIZE);
     strncpy(buf, p->source+pos+len, strcspn(p->source+pos+len, "\n"));
     fprintf(stderr, "%s\n\n", buf);
+    #endif
 
 
     parser_synchronize(p);
@@ -448,11 +450,8 @@ AstNode* rule_idtype_pair(Parser *p) {
         parser_throw_error(p, "type specifier missing");
 
     p->current++;
-
     Token datatype = parser_get_current_token(p);
-    if (!is_datatype(datatype.type))
-        parser_throw_error(p, "invalid type annotation");
-
+    // dont check valid types, because of custom classes
     p->current++;
 
     IdTypePair op = { .identifier = identifier, .type = datatype };
@@ -722,6 +721,7 @@ AstNode* rule_program(Parser *p) {
 
     AstNodeList statements;
     astnodelist_init(&statements);
+    // TODO: switch to vec_Vector
 
     setjmp(g_jmp_env); // return to here if any errors occur
 
