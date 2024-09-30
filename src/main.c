@@ -14,7 +14,7 @@
 #include "repr.h"
 #include "parser.h"
 #include "codegen.h"
-// #include "semantic_analysis.h"
+#include "semantic_analysis.h"
 
 
 
@@ -91,8 +91,9 @@ void run_from_file(char *filename) {
     AstNode *root = parse(tokens, source, filename);
     print_ast(root);
 
+    Table *table = check_semantics(root);
+    print_symboltable(table);
     // compile(root);
-    // check_semantics(root);
 
 }
 

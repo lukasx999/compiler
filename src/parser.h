@@ -88,7 +88,7 @@ typedef struct {
 typedef struct {
     Token identifier, returntype;
     AstNodeList parameters; // nodes == NULL if there are no parameters
-    AstNode *body; // NULL if no body == declaration
+    AstNode *body; // => block // NULL if no body == declaration
 } StmtFunction;
 
 typedef struct {

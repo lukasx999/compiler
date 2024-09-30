@@ -9,7 +9,6 @@
 #include <stddef.h>
 
 #include "lexer.h"
-#include "vector.h"
 
 
 

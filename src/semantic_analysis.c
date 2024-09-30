@@ -11,25 +11,48 @@
 
 
 
-
-
-
-
-
 static enum Datatype
 get_type_from_token(Token tok) {
+    switch (tok.type) {
+
+        case TOK_KEYWORD_DATATYPE_INT:  return DATATYPE_INTEGER; break;
+        case TOK_KEYWORD_DATATYPE_STR:  return DATATYPE_STRING;  break;
+        case TOK_KEYWORD_DATATYPE_BOOL: return DATATYPE_BOOL;    break;
+        case TOK_KEYWORD_DATATYPE_VOID: return DATATYPE_VOID;    break;
+
+        default: assert(!"invalid type"); break;
+    }
 }
 
 
 
-static void
-traverse(AstNode *root) {
+
+Table*
+table_create(Table *parent) {
+
+    Table *new = malloc(sizeof(Table));
+
+    new->parent = parent;
+
+    vec_Vector children;
+    vec_init(&children, sizeof(Table), 5, 2);
+    new->children = children;
+
+    vec_Vector rows;
+    vec_init(&rows, sizeof(TableColumn), 5, 2);
+    new->rows = rows;
+
+    return new;
+
+}
+
+
+
+static Table* // return NULL if no new symbol table is created
+traverse(AstNode *root, Table *table) {
 
     enum AstNode_type type = root->type;
 
-    // STNode *new = stnode_create();
-    // TableList list;
-    // stnodeslist_init(&list);
 
 
     switch (type) {
@@ -37,32 +60,57 @@ traverse(AstNode *root) {
 
         case TYPE_BLOCK: {
 
-            // stnodeslist_append(&list, new);
-
+            Table *new = table_create(table);
 
             size_t size = root->ast_block.statements.size;
+            for (size_t i = 0; i < size; ++i) {
+                Table *t = traverse(vec_get(&root->ast_block.statements, i), new);
+                if (t != NULL)
+                    vec_push(&new->children, t);
+            }
 
-            // for (size_t i=0; i<size; ++i) {
-            //     root->ast_block.statements.nodes[i];
-            // }
+            return new;
 
+        } break;
 
+        case TYPE_VARDECLARATION: {
 
+            TableColumn col;
+            col.identifier = root->ast_vardecl.idtypepair->ast_idtypepair.identifier.value;
+            col.type = get_type_from_token(root->ast_vardecl.idtypepair->ast_idtypepair.type);
 
+            if (root->ast_vardecl.value == NULL)
+                col.value = NULL;
+
+            vec_push(&table->rows, &col);
+            return NULL;
+
+        } break;
+
+        case TYPE_FUNCTION: {
+
+            TableColumn col;
+            col.type = DATATYPE_FUNCTION;
+            col.identifier = root->ast_function.identifier.value;
+
+            if (root->ast_function.body == NULL)
+                col.not_initialized = true;
+
+            vec_push(&table->rows, &col);
+
+            return traverse(root->ast_function.body, table);
         } break;
 
 
 
         case TYPE_LITERAL: {
-
-            // STEntry entry;
-
         } break;
 
 
 
 
-        default: assert(!"unknown astnode type"); break;
+        default: return NULL; break;
+        // default: assert(!"unknown astnode type"); break;
 
     }
 
@@ -73,10 +121,10 @@ traverse(AstNode *root) {
 
 
 
-void
+Table*
 check_semantics(AstNode *root) {
 
-    // traverse(root);
-
+    Table *table = traverse(root, NULL);
+    return table;
 
 }

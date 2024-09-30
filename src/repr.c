@@ -6,8 +6,7 @@
 #include <string.h>
 
 #include "repr.h"
-#include "lexer.h"
-#include "parser.h"
+
 
 
 
@@ -20,10 +19,48 @@ static void print_indent(uint32_t level) {
 }
 
 
+
+
+void
+_rec_print_symboltable(Table *root, int level) {
+
+
+    for (size_t i = 0; i < root->rows.size; ++i) {
+        print_indent(level);
+        TableColumn col = *(TableColumn*) vec_get(&root->rows, i);
+        printf("id: %s%s%s", COLOR_RED, col.identifier, COLOR_END);
+        printf(" -- ");
+        printf("type: %s%s\n%s", COLOR_BLUE, datatype_repr[col.type], COLOR_END);
+    }
+
+    ++level;
+
+    for (size_t i = 0; i < root->children.size; ++i) {
+        _rec_print_symboltable(vec_get(&root->children, i), level);
+    }
+
+}
+
+void
+print_symboltable(Table *root) {
+
+    puts("\n\n\n=== Symbol Table: ===\n");
+    _rec_print_symboltable(root, 0);
+    puts("\n---------------------\n");
+
+}
+
+
+
+
+
+
+
 static void _rec_print_ast(AstNode *root, uint32_t level) {
 
     if (root == NULL) return;
 
+    // TODO: use function for this
     // indenting
     uint32_t indentlevel = level * AST_PRINT_SPACING;
     while(indentlevel--)

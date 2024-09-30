@@ -10,6 +10,7 @@
 #include "parser.h"
 #include "lexer.h"
 #include "colors.h"
+#include "semantic_analysis.h"
 
 
 #define TOKENS_COLPOS 12
@@ -22,6 +23,8 @@
     printf("%s%s%s\n", (color), (string), COLOR_END)
 
 
+
+extern void print_symboltable    (Table *root);
 extern void print_input          (const char *input);
 extern void print_tokens_columns (TokenList tokens);
 extern void print_tokens_stream  (TokenList tokens);

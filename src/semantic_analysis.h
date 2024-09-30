@@ -4,6 +4,7 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "vector.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -15,7 +16,22 @@ enum Datatype {
     DATATYPE_STRING,
     DATATYPE_BOOL,
     DATATYPE_VOID,
+    DATATYPE_FUNCTION,
 };
+
+static char datatype_repr[][BUFSIZE] = {
+    [DATATYPE_INTEGER] = "int",
+    [DATATYPE_FLOAT] = "float",
+    [DATATYPE_STRING] = "string",
+    [DATATYPE_BOOL] = "bool",
+    [DATATYPE_VOID] = "void",
+    [DATATYPE_FUNCTION] = "func",
+};
+
+
+
+
+
 
 
 // Symbol table tree
@@ -25,47 +41,29 @@ typedef struct {
     char *value;
     enum Datatype type;
 
+    bool not_initialized;
+
     // Token token;
 } TableColumn; // column of the symbol table
 
+typedef vec_Vector TableRows; // array of columns
+typedef vec_Vector NodeList;  // array of pointers to several child nodes
 
-typedef struct {
-    size_t capacity;
-    size_t size;
-    TableColumn **nodes;
-} TableColumnList;
+typedef struct Table {
+    TableRows rows;
 
-// TODO: generic dynamic array
-
+    struct Table *parent;
+    NodeList children;
+} Table;
 
 
-
-typedef struct Table Table;
-
-// Dynamic Array of pointers to SymbolTables
-typedef struct {
-    size_t capacity;
-    size_t size;
-    Table **nodes;
-} TableList;
-
-extern void stnodeslist_init  (TableList *l);
-extern void stnodeslist_append(TableList *l, Table *node);
-
-struct Table {
-    struct Table *parent; // NULL if root
-    TableColumnList columns;
-    TableList children;
-};
+extern Table* table_create(Table *parent);
 
 
 
 
 
-
-
-
-extern void check_semantics(AstNode *root);
+extern Table* check_semantics(AstNode *root);
 
 
 #endif // _SEMANTIC_H

@@ -3,30 +3,16 @@
 - [ ] Better error handling with tokens
 - [ ] Remove Tokens from ast nodes?
 - [ ] tests
-- [ ] add preprocessor for macros and removing comments
-- [ ] string interpolation
-- [ ] inline assembly
-- [ ] add comments to lexer
+- [ ] preprocessor for macros and removing comments
 - [ ] xor operator: )(
-- [ ] warning if not using `$` for globals
 - [ ] implicit tokens?
 - [ ] implicit void returntype (defun foo() {})
 - [ ] seperate ast node for logical operators?
-- [ ] dollar as part of identifier of global variables
-- [ ] function: extra node for function parameters
-- [ ] add info calls to repr
-- [ ] function calls
-- [ ] productions with multiple tokens (operator precedence)
 - [ ] references/pointers (let foo'&int;)
 - [ ] lambda functions (like js)
 - [ ] `nil` vs `void`
 - [ ] else if
-- [ ] prevent `ret` in global scope
-- [ ] operator ")("
-- [ ] evaluating expressions at compile time?
-- [ ] find a name for the language
- - goddamn js frameworks
-- [ ] sophisticated Nvim plugin for syntax highlighting
+- [x] function calls
 - [x] make assignment an expression
 - [x] fix this: if1 {} == if 1 {} or ret1 == ret 1
 - [x] function declarations (NULL pointer)
@@ -62,3 +48,14 @@ out.o (linking)
   |
 out (elf64 executable)
 ```
+
+
+- **Semantic analysis**
+ - prevent usage of `ret` in global scope
+ - enforce correct usage of `ret` in function
+ - type checking
+ - declaring existing variable more than once
+ - double assignment to const
+ - enforce `$` for global variables (or warning)
+
+
