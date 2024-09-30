@@ -98,26 +98,6 @@ void parser_throw_error(Parser *p, const char *message) {
 
 
 
-/* AST NODE LIST */
-
-void astnodelist_init(AstNodeList *a) {
-    a->capacity = 5;
-    a->size = 0;
-    a->nodes = malloc(a->capacity * sizeof(AstNode*));
-}
-
-void astnodelist_append(AstNodeList *a, AstNode **new) {
-    if (a->size+1 == a->capacity) {
-        a->capacity *= 2;
-        a->nodes = realloc(a->nodes, a->capacity * sizeof(AstNode*));
-    }
-    a->nodes[a->size++] = *new;
-}
-
-/* ------------- */
-
-
-
 // `operation` gets casted to corresponding type, according to `Node_type`
 AstNode*
 ast_create_node(enum AstNode_type type, void *operation) {
@@ -317,19 +297,19 @@ AstNode* rule_call(Parser *p) {
     while (match_tokentypes(p, TOK_LPAREN, MATCH_SENTINEL)) {
         ++p->current;
 
-        AstNodeList arglist;
-        astnodelist_init(&arglist);
+        vec_Vector arglist;
+        vec_init(&arglist, sizeof(AstNode), 5, 2);
 
         if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL)) {
 
             do {
                 AstNode *new = rule_expression(p);
-                astnodelist_append(&arglist, &new);
+                vec_push(&arglist, new);
             }
             while (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL) && p->current++); // short-circuit!
 
         } else
-            arglist.nodes = NULL;
+            arglist._blob = NULL;
 
         if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
             parser_throw_error(p, "closing paren missing");
@@ -469,12 +449,12 @@ AstNode* rule_block(Parser *p) {
     if (match_tokentypes(p, TOK_LBRACE, MATCH_SENTINEL)) {
         p->current++;
 
-        AstNodeList list;
-        astnodelist_init(&list);
+        vec_Vector list;
+        vec_init(&list, sizeof(AstNode), 5, 2);
 
         while (!match_tokentypes(p, TOK_RBRACE, MATCH_SENTINEL) && !match_tokentypes(p, TOK_EOF, MATCH_SENTINEL)) {
             AstNode *stmt = rule_statement(p);
-            astnodelist_append(&list, &stmt);
+            vec_push(&list, stmt);
         }
 
         // check for matching brace
@@ -626,13 +606,13 @@ AstNode* rule_function(Parser *p) {
         ++p->current;
 
 
-        AstNodeList paramlist;
-        astnodelist_init(&paramlist);
+        vec_Vector paramlist;
+        vec_init(&paramlist, sizeof(AstNode), 5, 2);
 
         if (match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL)) {
             while (1) {
                 AstNode *new = rule_idtype_pair(p);
-                astnodelist_append(&paramlist, &new);
+                vec_push(&paramlist, new);
 
                 if (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL)) {
                     ++p->current;
@@ -641,7 +621,7 @@ AstNode* rule_function(Parser *p) {
                 else break;
             }
         }
-        else paramlist.nodes = NULL;
+        else paramlist._blob = NULL;
 
 
         if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
@@ -719,15 +699,14 @@ AstNode* rule_statement(Parser *p) {
 AstNode* rule_program(Parser *p) {
 // BNF: program -> statement* EOF
 
-    AstNodeList statements;
-    astnodelist_init(&statements);
-    // TODO: switch to vec_Vector
+    vec_Vector statements;
+    vec_init(&statements, sizeof(AstNode), 5, 2);
 
     setjmp(g_jmp_env); // return to here if any errors occur
 
     while (!match_tokentypes(p, TOK_EOF, MATCH_SENTINEL)) {
         AstNode *new = rule_statement(p);
-        astnodelist_append(&statements, &new);
+        vec_push(&statements, new);
     }
 
     Block root = { .statements = statements, .root = true };
@@ -746,10 +725,10 @@ AstNode*
 parse(TokenList tokens, char *source, const char *filename) {
 
     Parser p = {
-        .tokens = tokens,
-        .source = source,
-        .current = 0,
-        .filename = filename,
+        .tokens      = tokens,
+        .source      = source,
+        .current     = 0,
+        .filename    = filename,
         .error_count = 0,
     };
 

@@ -19,15 +19,7 @@
 
 
 typedef struct AstNode AstNode; // forward reference
-
-
-
-// this lets a node point to multiple nodes, not just 1 or 2
-typedef struct {
-    size_t capacity, size;
-    AstNode **nodes;
-} AstNodeList;
-
+typedef vec_Vector AstNodeList;
 
 
 /* -- EXPRESSIONS -- */

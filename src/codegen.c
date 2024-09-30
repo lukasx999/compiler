@@ -38,7 +38,7 @@ void _rec_compile(AstNode *root, FILE *file) {
         case TYPE_BLOCK: {
             size_t size = root->ast_block.statements.size;
             for (size_t i=0; i<size; ++i)
-                _rec_compile(root->ast_block.statements.nodes[i], file);
+                _rec_compile(vec_get(&root->ast_block.statements, i), file);
         } break;
 
 

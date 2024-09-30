@@ -118,7 +118,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
             level++;
             for (size_t i=0; i<size; ++i) {
 
-                AstNode *node = root->ast_function.parameters.nodes[i];
+                AstNode *node = vec_get(&root->ast_function.parameters, i);
                 _rec_print_ast(node, level);
             }
 
@@ -158,7 +158,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
             size_t size = root->ast_call.arguments.size;
             level++;
             for (size_t i=0; i<size; ++i) {
-                AstNode *node = root->ast_call.arguments.nodes[i];
+                AstNode *node = vec_get(&root->ast_call.arguments, i);
                 _rec_print_ast(node, level);
             }
         } break;
@@ -173,7 +173,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
             level++;
             for (size_t i=0; i<size; ++i) {
-                AstNode *node = root->ast_block.statements.nodes[i];
+                AstNode *node = vec_get(&root->ast_block.statements, i);
                 _rec_print_ast(node, level);
             }
 
