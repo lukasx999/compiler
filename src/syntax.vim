@@ -3,13 +3,14 @@
 
 " syntax/script.vim
 syntax match Keyword /let/
-syntax match Keyword /var/
 syntax match Keyword /mut/
 syntax match Keyword /defun/
 syntax match Keyword /ret/
 syntax match Keyword /if/
 syntax match Keyword /else/
 syntax match Keyword /elsif/
+syntax match Keyword /loop/
+syntax match Keyword /escape/
 syntax match Keyword /container/
 syntax match Keyword /create/
 syntax match Keyword /demolish/

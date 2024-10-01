@@ -12,25 +12,19 @@
 
 /* Recursive Descent Parser */
 
-
-
-
-
-
-
-typedef struct AstNode AstNode; // forward reference
+typedef struct AstNode AstNode;
 typedef vec_Vector AstNodeList;
-
 
 /* -- EXPRESSIONS -- */
 
 typedef struct {
-    AstNode *left_node, *right_node;
+    AstNode *left_node,  // [expr]
+            *right_node; // [expr]
     Token operator;
 } ExprBinaryOp;
 
 typedef struct {
-    AstNode *node;
+    AstNode *node; // [expr]
     Token operator;
 } ExprUnaryOp;
 
@@ -39,16 +33,16 @@ typedef struct {
 } ExprLiteral;
 
 typedef struct {
-    AstNode *node;
+    AstNode *node; // [expr]
 } ExprGrouping;
 
 typedef struct {
-    AstNode *identifier; // Token?
-    AstNode *value;
+    AstNode *identifier; // [literal-id] TODO: Token?
+    AstNode *value;      // [expr]
 } ExprAssign;
 
 typedef struct {
-    AstNode *callee;
+    AstNode *callee; // [expr]
     // Token rparen;
     AstNodeList arguments;
 } ExprCall;
@@ -56,57 +50,52 @@ typedef struct {
 
 /* -- ----------- -- */
 
-
 /* -- STATEMENTS -- */
 
-/* ETC */
+/* UTIL */
 
 // stores an identifier and a datatype as a pair
-// eg: let x'int;
-// identifier: x
-// type: int
 typedef struct {
     Token identifier, type;
 } IdTypePair;
 
-
-// statement sequence { ... } => scope
+// statement sequence = scope
 typedef struct {
-    AstNodeList statements; // (dynamic) array containing a sequence of statements
+    AstNodeList statements;
     bool root;
 } Block;
 
+/* ---- */
 
 /* -- STATEMENTS -- */
 
 typedef struct {
-    AstNode *idtypepair;
-    AstNode *value; // NULL if not yet specified
+    AstNode *idtypepair; // [idtypepair]
+    AstNode *value;      // [expr] | NULL = no initialization
     bool mutable;
 } StmtVarDeclaration;
 
 typedef struct {
     Token identifier, returntype;
-    AstNodeList parameters; // nodes == NULL if there are no parameters
-    AstNode *body; // => block // NULL if no body == declaration
+    AstNodeList parameters;
+    AstNode *body; // [block] | NULL = declaration
 } StmtFunction;
 
 typedef struct {
-    AstNode *expression;
+    AstNode *value; // [expr]
     // Token keyword; // TODO: this
 } StmtReturn;
 
 typedef struct {
-    AstNode *condition;
-    AstNode *then_body;
-    // AstNodeList elseif_bodies; // TODO: this
-    AstNode *else_body; // NULL, if there is none
+    AstNode *condition; // [expr]
+    AstNode *then_body; // [block]
+    AstNode *else_body; // [block]
 } StmtIf;
 
 /* -- ---------- -- */
 
 
-struct AstNode { // tagged union
+struct AstNode {
 
     enum AstNode_type {
         // EXPRs
@@ -145,11 +134,13 @@ extern void ast_free_nodes (AstNode *root);
 /* -- State of the Parser -- */
 
 typedef struct {
-    TokenList tokens;     // dynamic array of tokens
-    char *source;         // source code: for errors
-    size_t current;       // current token index
-    const char *filename; // if empty -> repl
-    uint32_t error_count; // if 0 -> no errors
+    TokenList  tokens;      // dynamic array of tokens
+    size_t     current;     // current token index
+    uint32_t   error_count; // if 0 -> no errors
+
+    // these are mainly just for errors
+    char       *source;     // source code: for errors
+    const char *filename;   // if empty -> repl
 } Parser;
 
 extern Token    parser_get_current_token (Parser *p);
@@ -186,7 +177,12 @@ extern AstNode
 
 /* ERROR HANDLING */
 
-extern void parser_throw_error (Parser *p, const char *message);
+enum ErrorType {
+    ERROR_CUSTOM,
+    ERROR_EXPECTED_SEMICOLON,
+};
+
+extern void parser_throw_error (Parser *p, enum ErrorType type, const char *message);
 extern void parser_synchronize (Parser *p);
 extern void parser_exit_errors (Parser *p);
 

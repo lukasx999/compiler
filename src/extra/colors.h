@@ -20,7 +20,6 @@
 #define COLOR_BOLD        "\33[1m"
 #define COLOR_UNDERLINE   "\33[4m"
 #define COLOR_ITALIC      "\33[3m"
-
 #define COLOR_STRIKETHROUGH "\33[9m"
 
 #define COLOR_END         "\33[0m"

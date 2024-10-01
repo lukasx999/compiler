@@ -168,7 +168,7 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
         case TYPE_RETURN: {
             printf("%sreturn%s\n", COLOR_BLUE, COLOR_END);
-            _rec_print_ast(root->ast_return.expression, ++level);
+            _rec_print_ast(root->ast_return.value, ++level);
         } break;
 
         case TYPE_ASSIGN: {

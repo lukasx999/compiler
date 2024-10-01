@@ -1,8 +1,14 @@
 # TODO
+- [ ] **should idtypepair really be an astnode?**
+- [ ] **add keyword tokens to every astnode**
+- [ ] **move error handling to seperate module**
+
+- [ ] else if
 - [ ] convert grammar to real BNF
 - [ ] Better error handling with tokens
 - [ ] Remove Tokens from ast nodes?
 - [ ] tests
+- [ ] free astnodes
 - [ ] preprocessor for macros and removing comments
 - [ ] xor operator: )(
 - [ ] implicit tokens?
@@ -11,7 +17,6 @@
 - [ ] references/pointers (let foo'&int;)
 - [ ] lambda functions (like js)
 - [ ] `nil` vs `void`
-- [ ] else if
 - [x] function calls
 - [x] make assignment an expression
 - [x] fix this: if1 {} == if 1 {} or ret1 == ret 1

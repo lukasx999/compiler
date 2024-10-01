@@ -1,20 +1,3 @@
-let $global'int = 1;
-
 defun main() -> int {
-
-    let foo'int;
-    let bar'int;
-    let baz'int;
-
-    foo = 45;
-    bar = 45;
-    baz = 45;
-
-    defun inner(arg'int) -> void {
-        let inner'int;
-        ret;
-    }
-
-
-    ret 0;
+    let mut foo'int = 45;
 }

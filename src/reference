@@ -53,7 +53,8 @@ let foo'str = "greetings"; # Strings
 }
 
 
-# If Statement
+# Conditionals
+
 if 1==2 {
     let foo'int = 45;
 }
@@ -61,6 +62,24 @@ if 1==2 {
 # Else
 if 1 {}
 else {}
+
+# Loops
+
+loop {
+    escape; # break out of the loop
+}
+
+# loop for 5 times
+
+let x'int = 0;
+loop {
+    x = x + 1;
+    if x == 5 {
+        escape;
+    }
+}
+
+
 
 # Functions
 

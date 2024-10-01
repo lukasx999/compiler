@@ -47,6 +47,7 @@ KEYWORD_DEFUN   = "defun",
 KEYWORD_RETURN  = "ret",
 KEYWORD_PUTS    = "puts",
 KEYWORD_LOOP    = "loop",
+KEYWORD_ESCAPE  = "escape",
 KEYWORD_IF      = "if",
 KEYWORD_ELSEIF  = "elsif",
 KEYWORD_ELSE    = "else";
@@ -64,6 +65,7 @@ KEYWORD_TYPE_VOID = "void";
 
 // keywords always have to be manually sorted by length in descending order (eg: for vs foreach -> matches only for)
 static keyword_t keywords[] = {
+    KEYWORD_ESCAPE,
     LITERAL_FALSE,
     KEYWORD_DEFUN,
     KEYWORD_RETURN,
@@ -149,6 +151,7 @@ enum TokenType {
     TOK_KEYWORD_DEFUN,
     TOK_KEYWORD_RETURN,
     TOK_KEYWORD_LOOP,
+    TOK_KEYWORD_ESCAPE,
     TOK_KEYWORD_IF,
     TOK_KEYWORD_ELSEIF,
     TOK_KEYWORD_ELSE,
@@ -234,6 +237,7 @@ static char token_repr[][BUFSIZE] = {
     [TOK_KEYWORD_DEFUN]         = "defun",
     [TOK_KEYWORD_RETURN]        = "return",
     [TOK_KEYWORD_LOOP]          = "loop",
+    [TOK_KEYWORD_ESCAPE]        = "escape",
     [TOK_KEYWORD_IF]            = "if",
     [TOK_KEYWORD_ELSEIF]        = "elsif",
     [TOK_KEYWORD_ELSE]          = "else",
