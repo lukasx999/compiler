@@ -1,3 +1,2 @@
-defun main() -> int {
-    let mut foo'int = 45;
+defun main() -> void {
 }

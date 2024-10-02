@@ -11,6 +11,7 @@
 
 #include "parser.h"
 #include "colors.h"
+#include "err.h"
 
 
 jmp_buf g_jmp_env;
@@ -54,56 +55,46 @@ void parser_exit_errors(Parser *p) {
 
 void parser_throw_error(Parser *p, enum ErrorType type, const char *message) {
 
-    switch (type) {
-        case ERROR_EXPECTED_SEMICOLON: {
-            message = "expected semicolon";
-            p->current--; // FIX: we use longjmp anyway, so what does it matter?
-        } break;
-        default: break;
-    }
-
-
     // too many errors...
     if (p->error_count >= MAX_ERRORS) parser_exit_errors(p);
     ++p->error_count;
 
-    Token current = parser_get_current_token(p);
-    fprintf(stderr, "%s%s%s:%lu:%lu: %s", COLOR_BOLD, COLOR_WHITE, p->filename, current.line_number, current.column, COLOR_END);
-    fprintf(stderr, "%s%sERROR: %s", COLOR_RED, COLOR_BOLD, COLOR_END);
+
+    // pre-defined messages
+    switch (type) {
+        case ERROR_EXPECTED_SEMICOLON: {
+            p->current--; // INFO: we use longjmp anyway, so what does it matter?
+            err_correct(parser_get_current_token(p), "expected semicolon", ";", p->source, p->filename);
+            p->current++;
+        } break;
+
+        case ERROR_EXPECTED_RETURNTYPE: {
+            p->current--;
+            err_correct(parser_get_current_token(p), "expected returntype", " void", p->source, p->filename);
+            p->current++;
+        } break;
+
+        case ERROR_EXPECTED_ARROW: {
+            p->current--;
+            err_correct(parser_get_current_token(p), "expected arrow", " ->", p->source, p->filename);
+            p->current++;
+        } break;
+
+        case ERROR_TYPE_SPECIFIER_MISSING: {
+            p->current--;
+            err_correct(parser_get_current_token(p), "type specifier missing", "'int", p->source, p->filename);
+            p->current++;
+        } break;
 
 
 
-    fprintf(stderr, "%s\n", message);
+        case ERROR_CUSTOM: {
+            err_throw(parser_get_current_token(p), message, p->source, p->filename);
+        } break;
 
-    // TODO: experimental:
-    #if 1
 
-    size_t pos = current.absolute_pos - 1;
-    size_t len = current.length;
-    char buf[BUFSIZE] = { 0 };
-
-    fprintf(stderr, "%s   %lu %s|\t", COLOR_WHITE, current.line_number, COLOR_END);
-
-    size_t offset = 0;
-    for (size_t i=pos ;; --i) {
-        if (p->source[i] == '\n' || i==0) {
-            offset = i==0 ? i : i+1; // +1 to get rid of newline at the beginning
-            break;
-        }
+        default: assert(!"unknown type"); break;
     }
-
-    strncpy(buf, p->source+offset, pos-offset);
-    fprintf(stderr, "%s", buf);
-
-    memset(buf, 0, BUFSIZE);
-    strncpy(buf, p->source+pos, len),
-    fprintf(stderr, "%s%s%s%s", COLOR_RED, COLOR_UNDERLINE, buf, COLOR_END);
-
-    memset(buf, 0, BUFSIZE);
-    strncpy(buf, p->source+pos+len, strcspn(p->source+pos+len, "\n"));
-    fprintf(stderr, "%s\n\n", buf);
-    #endif
-
 
     parser_synchronize(p);
     longjmp(g_jmp_env, 1); // return to global scope
@@ -171,7 +162,9 @@ void parser_synchronize(Parser *p) {
             parser_exit_errors(p);
 
     }
+
     p->current = new + 1;
+
 }
 
 
@@ -279,7 +272,7 @@ AstNode* rule_call(Parser *p) {
             while (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL) && p->current++); // short-circuit!
 
         } else
-            arglist._blob = NULL;
+            arglist.blob = NULL;
 
         if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
             parser_throw_error(p, ERROR_CUSTOM, "closing paren missing");
@@ -390,14 +383,14 @@ AstNode* rule_idtype_pair(Parser *p) {
     // BNF: idtypepair -> IDENTIFIER "'" DATATYPE
     // eg: foo'int;
 
-    if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER))
+    if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL))
         parser_throw_error(p, ERROR_CUSTOM, "expected identifier");
 
     Token identifier = parser_get_current_token(p);
     p->current++;
 
     if (!match_tokentypes(p, TOK_SINGLEQUOTE, MATCH_SENTINEL))
-        parser_throw_error(p, ERROR_CUSTOM, "type specifier missing");
+        parser_throw_error(p, ERROR_TYPE_SPECIFIER_MISSING, NULL);
 
     p->current++;
     Token datatype = parser_get_current_token(p);
@@ -565,7 +558,7 @@ AstNode* rule_function(Parser *p) {
     if (match_tokentypes(p, TOK_KEYWORD_DEFUN, MATCH_SENTINEL)) {
         ++p->current;
 
-        if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER))
+        if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL))
             parser_throw_error(p, ERROR_CUSTOM, "expected identifier");
 
         Token identifier = parser_get_current_token(p);
@@ -591,7 +584,7 @@ AstNode* rule_function(Parser *p) {
                 else break;
             }
         }
-        else paramlist._blob = NULL;
+        else paramlist.blob = NULL;
 
 
         if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
@@ -600,17 +593,16 @@ AstNode* rule_function(Parser *p) {
 
 
 
-        if (!match_tokentypes(p, TOK_ARROW))
-            parser_throw_error(p, ERROR_CUSTOM, "expected arrow");
+        if (!match_tokentypes(p, TOK_ARROW, MATCH_SENTINEL))
+            parser_throw_error(p, ERROR_EXPECTED_ARROW, NULL);
         ++p->current;
 
 
         Token returntype = parser_get_current_token(p);
         if (!is_datatype(returntype.type))
-            parser_throw_error(p, ERROR_CUSTOM, "expected returntype");
+            parser_throw_error(p, ERROR_EXPECTED_RETURNTYPE, NULL);
+
         ++p->current;
-
-
 
         AstNode *body;
         if (match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL)) {
@@ -639,7 +631,7 @@ AstNode* rule_function(Parser *p) {
 
 
 AstNode* rule_statement(Parser *p) {
-// BNF: statement -> vardecl | assign | expressionstatement | block
+// BNF: statement -> vardecl | if | function | return | block | expressionstatement
 
     AstNode *new;
 

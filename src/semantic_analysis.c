@@ -80,7 +80,7 @@ traverse(AstNode *root, Table *table) {
             col.type = get_type_from_token(root->ast_vardecl.idtypepair->ast_idtypepair.type);
 
             if (root->ast_vardecl.value == NULL)
-                col.value = NULL;
+                col.not_initialized = true;
 
             vec_push(&table->rows, &col);
             return NULL;

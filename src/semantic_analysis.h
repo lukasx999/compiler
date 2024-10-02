@@ -20,11 +20,11 @@ enum Datatype {
 };
 
 static char datatype_repr[][BUFSIZE] = {
-    [DATATYPE_INTEGER] = "int",
-    [DATATYPE_FLOAT] = "float",
-    [DATATYPE_STRING] = "string",
-    [DATATYPE_BOOL] = "bool",
-    [DATATYPE_VOID] = "void",
+    [DATATYPE_INTEGER]  = "int",
+    [DATATYPE_FLOAT]    = "float",
+    [DATATYPE_STRING]   = "string",
+    [DATATYPE_BOOL]     = "bool",
+    [DATATYPE_VOID]     = "void",
     [DATATYPE_FUNCTION] = "func",
 };
 
@@ -37,9 +37,10 @@ static char datatype_repr[][BUFSIZE] = {
 // Symbol table tree
 
 typedef struct {
-    char *identifier;
-    char *value;
+    char *identifier; // name
     enum Datatype type;
+    // memory location
+    // scope
 
     bool not_initialized;
 

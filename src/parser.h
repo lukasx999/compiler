@@ -180,6 +180,9 @@ extern AstNode
 enum ErrorType {
     ERROR_CUSTOM,
     ERROR_EXPECTED_SEMICOLON,
+    ERROR_EXPECTED_RETURNTYPE,
+    ERROR_EXPECTED_ARROW,
+    ERROR_TYPE_SPECIFIER_MISSING,
 };
 
 extern void parser_throw_error (Parser *p, enum ErrorType type, const char *message);

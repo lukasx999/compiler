@@ -15,7 +15,7 @@
 
 #define TOKENS_COLPOS 12
 
-#define AST_PRINT_SPACING 3
+#define AST_PRINT_SPACING 2
 #define AST_SEPERATOR     "⋅"
 
 

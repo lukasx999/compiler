@@ -16,7 +16,7 @@ typedef struct {
            element_size,
            growth_rate;
 
-    vec_Blob *_blob; // using char* instead of void* for pointer arith
+    vec_Blob *blob; // using char* instead of void* for pointer arith
 
 } vec_Vector;
 
