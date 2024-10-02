@@ -658,6 +658,7 @@ AstNode* rule_statement(Parser *p) {
 
 
 
+
 AstNode* rule_program(Parser *p) {
 // BNF: program -> statement* EOF
 
