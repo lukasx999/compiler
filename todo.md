@@ -3,6 +3,7 @@
 - [ ] **add keyword tokens to every astnode**
 - [ ] **move error handling to seperate module**
 
+- [ ] nvim bufferline / bottom left text
 - [ ] else if
 - [ ] convert grammar to real BNF
 - [ ] Better error handling with tokens
