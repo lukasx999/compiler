@@ -87,6 +87,11 @@ typedef struct {
 } StmtReturn;
 
 typedef struct {
+    AstNode *value; // [expr]
+    // Token keyword; // TODO: this
+} StmtEcho;
+
+typedef struct {
     AstNode *condition; // [expr]
     AstNode *then_body; // [block]
     AstNode *else_body; // [block]
@@ -101,7 +106,7 @@ struct AstNode {
         // EXPRs
         TYPE_BINARYOP, TYPE_UNARYOP, TYPE_LITERAL, TYPE_GROUPING, TYPE_CALL,
         // STMTs
-        TYPE_VARDECLARATION, TYPE_ASSIGN, TYPE_IF, TYPE_FUNCTION, TYPE_RETURN,
+        TYPE_VARDECLARATION, TYPE_ASSIGN, TYPE_IF, TYPE_FUNCTION, TYPE_RETURN, TYPE_ECHO,
         // ETC
         TYPE_IDTYPEPAIR, TYPE_BLOCK,
     } type;
@@ -117,6 +122,7 @@ struct AstNode {
         StmtIf              ast_if;
         StmtFunction        ast_function;
         StmtReturn          ast_return;
+        StmtEcho            ast_echo;
         Block               ast_block;
         IdTypePair          ast_idtypepair;
     };

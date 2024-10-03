@@ -14,6 +14,7 @@ syntax match Keyword /escape/
 syntax match Keyword /container/
 syntax match Keyword /create/
 syntax match Keyword /demolish/
+syntax match Keyword /echo/
 
 syntax match Type /int/
 syntax match Type /str/

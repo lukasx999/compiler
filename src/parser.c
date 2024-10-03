@@ -124,6 +124,7 @@ ast_create_node(enum AstNode_type type, void *operation) {
         case TYPE_IF:             new->ast_if          = *(StmtIf*)              operation; break;
         case TYPE_FUNCTION:       new->ast_function    = *(StmtFunction*)        operation; break;
         case TYPE_RETURN:         new->ast_return      = *(StmtReturn*)          operation; break;
+        case TYPE_ECHO:           new->ast_echo        = *(StmtEcho*)            operation; break;
         case TYPE_BLOCK:          new->ast_block       = *(Block*)               operation; break;
         case TYPE_IDTYPEPAIR:     new->ast_idtypepair  = *(IdTypePair*)          operation; break;
 
@@ -529,6 +530,31 @@ AstNode *rule_if(Parser *p) {
 }
 
 
+AstNode *rule_echo(Parser *p) {
+// BNF: echo -> "echo" expression ";"
+
+    if (match_tokentypes(p, TOK_KEYWORD_ECHO, MATCH_SENTINEL)) {
+        ++p->current;
+
+        AstNode *expr = rule_expression(p);
+
+        // check for semicolon
+        if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
+            parser_throw_error(p, ERROR_EXPECTED_SEMICOLON, NULL);
+        p->current++;
+
+        StmtEcho op = { expr };
+        return ast_create_node(TYPE_ECHO, &op);
+
+    }
+    else return NULL;
+
+}
+
+
+
+
+
 AstNode *rule_return(Parser *p) {
 // BNF: return -> "ret" expression? ";"
 
@@ -645,6 +671,9 @@ AstNode* rule_statement(Parser *p) {
     if (new != NULL) return new;
 
     new = rule_return(p);
+    if (new != NULL) return new;
+
+    new = rule_echo(p);
     if (new != NULL) return new;
 
     new = rule_block(p);

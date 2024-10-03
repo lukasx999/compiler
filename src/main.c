@@ -93,7 +93,7 @@ void run_from_file(char *filename) {
 
     Table *table = check_semantics(root);
     print_symboltable(table);
-    // compile(root);
+    compile(root);
 
 }
 

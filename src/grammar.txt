@@ -4,6 +4,7 @@ program             -> statement* EOF
 statement           -> vardecl | if | function | return | block | expressionstatement
 function            -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE (body | ";")
 return              -> "ret" expression? ";"
+echo                -> "echo" expression ";"
 if                  -> "if" expression block ("else" block)?
 expressionstatement -> expression ";"
 vardeclaration      -> "let" "mut"? IDTYPEPAIR ( "=" expression )? ";"

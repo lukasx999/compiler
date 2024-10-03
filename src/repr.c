@@ -171,6 +171,11 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
             _rec_print_ast(root->ast_return.value, ++level);
         } break;
 
+        case TYPE_ECHO: {
+            printf("%secho%s\n", COLOR_BLUE, COLOR_END);
+            _rec_print_ast(root->ast_echo.value, ++level);
+        } break;
+
         case TYPE_ASSIGN: {
             printf("%sassign%s\n", COLOR_BLUE, COLOR_END);
 

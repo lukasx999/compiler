@@ -53,6 +53,15 @@ let foo'str = "greetings"; # Strings
 }
 
 
+# Echo
+echo "foo";
+echo 1+2+3;
+
+# Extern functions
+ext defun puts(string'str) -> int;
+
+
+
 # Conditionals
 
 if 1==2 {

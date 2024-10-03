@@ -8,8 +8,15 @@
 
 #include "parser.h"
 
+#define ASM_FILENAME "out.s"
+#define OBJ_FILENAME "out.o"
+#define BIN_FILENAME "out"
+
+
 
 extern void compile(AstNode *root);
+
+
 
 
 
