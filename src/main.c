@@ -14,7 +14,7 @@
 #include "repr.h"
 #include "parser.h"
 #include "codegen.h"
-#include "semantic_analysis.h"
+#include "symboltable.h"
 
 
 
@@ -82,10 +82,10 @@ char* read_file(char *filename) {
 void run_from_file(char *filename) {
 
     char *source = read_file(filename);
-    print_input(source);
+    // print_input(source);
 
     TokenList tokens = tokenize(source);
-    print_tokens_stream(tokens);
+    // print_tokens_stream(tokens);
     // print_tokens_columns(tokens);
 
     AstNode *root = parse(tokens, source, filename);

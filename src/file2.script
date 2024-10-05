@@ -1,0 +1,22 @@
+defun main() -> void {
+let main_foo'int = 1;
+let main_bar'int = 2;
+let main_baz'int = 3;
+}
+
+defun foo() -> void {
+let foo_foo'int = 1;
+let foo_bar'int = 2;
+let foo_baz'int = 3;
+}
+
+defun bar() -> void {
+let bar_foo'int = 1;
+let bar_bar'int = 2;
+let bar_baz'int = 3;
+    {
+        let scope_foo'int = 1;
+        let scope_bar'int = 2;
+        let scope_baz'int = 3;
+    }
+}

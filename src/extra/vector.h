@@ -28,6 +28,7 @@ extern void  vec_delete        (vec_Vector *v, size_t index);
 extern void  vec_insert_before (vec_Vector *v, size_t index, void *value);
 extern void  vec_insert_after  (vec_Vector *v, size_t index, void *value);
 extern void* vec_pop           (vec_Vector *v);
+extern void  vec_extend        (vec_Vector *this, vec_Vector *other); // merge `other` into `this`
 
 
 

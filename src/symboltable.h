@@ -19,6 +19,17 @@ enum Datatype {
     DATATYPE_FUNCTION,
 };
 
+
+static size_t datatype_size[] = {
+    [DATATYPE_INTEGER]  = 4,
+    [DATATYPE_FLOAT]    = 8,
+    [DATATYPE_STRING]   = 8,
+    [DATATYPE_BOOL]     = 1,
+    [DATATYPE_VOID]     = 0,
+    [DATATYPE_FUNCTION] = 8,
+};
+
+
 static char datatype_repr[][BUFSIZE] = {
     [DATATYPE_INTEGER]  = "int",
     [DATATYPE_FLOAT]    = "float",
@@ -39,7 +50,7 @@ static char datatype_repr[][BUFSIZE] = {
 typedef struct {
     char *identifier; // name
     enum Datatype type;
-    // memory location
+    size_t address; // memory location (offset to rbp)
     // scope
 
     bool not_initialized;
@@ -51,10 +62,10 @@ typedef vec_Vector TableRows; // array of columns
 typedef vec_Vector NodeList;  // array of pointers to several child nodes
 
 typedef struct Table {
-    TableRows rows;
-
+    TableRows rows; // list of columns
     struct Table *parent;
     NodeList children;
+    bool stack_frame;
 } Table;
 
 

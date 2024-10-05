@@ -39,6 +39,7 @@ err_correct(Token tok, const char *message, const char *correct, char *source, c
 
     print_error_header(tok, filename, message);
 
+    #if 0
     size_t pos = tok.absolute_pos - 1;
     size_t len = tok.length;
     char buf[BUFSIZE] = { 0 };
@@ -53,6 +54,7 @@ err_correct(Token tok, const char *message, const char *correct, char *source, c
     memset(buf, 0, BUFSIZE);
     strncpy(buf, source+pos+len, strcspn(source+pos+len, "\n"));
     fprintf(stderr, "%s\n\n", buf);
+    #endif
 
 }
 
@@ -64,6 +66,7 @@ err_throw(Token tok, const char *message, char *source, const char *filename) {
 
     print_error_header(tok, filename, message);
 
+    #if 0
     size_t pos = tok.absolute_pos - 1;
     size_t len = tok.length;
     char buf[BUFSIZE] = { 0 };
@@ -80,5 +83,6 @@ err_throw(Token tok, const char *message, char *source, const char *filename) {
     memset(buf, 0, BUFSIZE);
     strncpy(buf, source+pos+len, strcspn(source+pos+len, "\n"));
     fprintf(stderr, "%s\n\n", buf);
+    #endif
 
 }

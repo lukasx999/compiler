@@ -113,3 +113,15 @@ void*
 vec_pop(vec_Vector *v) {
     return v->blob + --v->size * v->element_size;
 }
+
+
+void
+vec_extend(vec_Vector *this, vec_Vector *other) {
+
+    assert(this->element_size == other->element_size); // both vectors must have the same type
+
+    for (size_t i=0; i<other->size; ++i)
+        vec_push(this, vec_get(other, i));
+
+}
+

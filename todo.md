@@ -1,8 +1,8 @@
 # TODO
 - [ ] **should idtypepair really be an astnode?**
 - [ ] **add keyword tokens to every astnode**
-- [ ] **move error handling to seperate module**
 
+- [ ] shell cmd interpolation
 - [ ] nvim bufferline / bottom left text
 - [ ] else if
 - [ ] convert grammar to real BNF
@@ -30,6 +30,7 @@
 - [x] add static type checking (eg: let foo'int = 5;)
 - [x] generic dynamic array
 - [x] Symbol Table datastructure
+- [x] move error handling to seperate module
  - stack of lists (temporary)
  - stack w/ pushcount (temporary)
  - **tree of lists** (every node has a pointer to the parent)

@@ -5,10 +5,18 @@ main:
     mov rbp, rsp
 
 
+    ; foo
     mov rax, 1
     mov rdi, 1
     mov rsi, msg
     mov rdx, len
+    syscall
+
+    ; bar
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, msg2
+    mov rdx, len2
     syscall
 
 
@@ -20,5 +28,8 @@ main:
 
     section .data
 
-msg: db "Hello, World"
+msg: db "Foo", 10
 len: db $-msg
+
+msg2: db "Bar", 10
+len2: db $-msg2

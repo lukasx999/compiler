@@ -113,7 +113,6 @@ static enum TokenType match_keyword(char *query) {
     else if (!strcmp(query, KEYWORD_ECHO     )) type = TOK_KEYWORD_ECHO;
     else if (!strcmp(query, KEYWORD_LOOP     )) type = TOK_KEYWORD_LOOP;
     else if (!strcmp(query, KEYWORD_ESCAPE   )) type = TOK_KEYWORD_ESCAPE;
-    else if (!strcmp(query, KEYWORD_PUTS     )) type = TOK_KEYWORD_PUTS;
     else if (!strcmp(query, KEYWORD_IF       )) type = TOK_KEYWORD_IF;
     else if (!strcmp(query, KEYWORD_ELSE     )) type = TOK_KEYWORD_ELSE;
     else if (!strcmp(query, LITERAL_TRUE     )) type = TOK_LITERAL_TRUE;

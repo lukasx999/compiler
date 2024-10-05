@@ -24,20 +24,19 @@ static void print_indent(uint32_t level) {
 void
 _rec_print_symboltable(Table *root, int level) {
 
-
     for (size_t i = 0; i < root->rows.size; ++i) {
         print_indent(level);
         TableColumn col = *(TableColumn*) vec_get(&root->rows, i);
-        printf("id: %s%s%s", COLOR_RED, col.identifier, COLOR_END);
-        printf(" -- ");
-        printf("type: %s%s\n%s", COLOR_BLUE, datatype_repr[col.type], COLOR_END);
+        printf("sym: %s%s%s | ",     COLOR_RED, col.identifier, COLOR_END);
+        printf("type: %s%s%s | ",   COLOR_BLUE, datatype_repr[col.type], COLOR_END);
+        printf("addr: %s%lu%s | ", COLOR_BLUE, col.address, COLOR_END);
+        printf("stackframe: %s%b\n%s", COLOR_BLUE, root->stack_frame, COLOR_END);
     }
 
     ++level;
 
-    for (size_t i = 0; i < root->children.size; ++i) {
+    for (size_t i = 0; i < root->children.size; ++i)
         _rec_print_symboltable(vec_get(&root->children, i), level);
-    }
 
 }
 

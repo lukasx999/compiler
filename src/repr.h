@@ -10,7 +10,7 @@
 #include "parser.h"
 #include "lexer.h"
 #include "colors.h"
-#include "semantic_analysis.h"
+#include "symboltable.h"
 
 
 #define TOKENS_COLPOS 12

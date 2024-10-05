@@ -11,7 +11,7 @@
 
 #include "vector.h"
 
-#define BUFSIZE 100
+#define BUFSIZE 300
 #define GET_ARRAY_SIZE(array) (sizeof((array)) / sizeof(*(array)))
 
 
@@ -46,7 +46,6 @@ KEYWORD_MUT     = "mut",
 KEYWORD_DEFUN   = "defun",
 KEYWORD_RETURN  = "ret",
 KEYWORD_ECHO    = "echo",
-KEYWORD_PUTS    = "puts",
 KEYWORD_LOOP    = "loop",
 KEYWORD_ESCAPE  = "escape",
 KEYWORD_IF      = "if",
@@ -72,7 +71,6 @@ static keyword_t keywords[] = {
     KEYWORD_DEFUN,
     KEYWORD_RETURN,
     LITERAL_TRUE,
-    KEYWORD_PUTS,
     KEYWORD_TYPE_VOID,
     KEYWORD_MUT,
     KEYWORD_ELSEIF,
@@ -149,7 +147,6 @@ enum TokenType {
     // KEYWORDS
     TOK_KEYWORD_LET,
     TOK_KEYWORD_MUT,
-    TOK_KEYWORD_PUTS,
     TOK_KEYWORD_DEFUN,
     TOK_KEYWORD_RETURN,
     TOK_KEYWORD_ECHO,
@@ -236,7 +233,6 @@ static char token_repr[][BUFSIZE] = {
 
     [TOK_KEYWORD_LET]           = "let",
     [TOK_KEYWORD_MUT]           = "mut",
-    [TOK_KEYWORD_PUTS]          = "puts",
     [TOK_KEYWORD_DEFUN]         = "defun",
     [TOK_KEYWORD_RETURN]        = "return",
     [TOK_KEYWORD_ECHO]          = "echo",

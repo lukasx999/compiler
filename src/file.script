@@ -1,4 +1,4 @@
-defun main() -> int {
-    echo "hi";
-    ret 0;
+defun main() -> void {
+    echo "foo";
+    echo "bar";
 }
