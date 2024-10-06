@@ -1,5 +1,5 @@
 # TODO
-- [ ] **should idtypepair really be an astnode?**
+- [ ] **should idtypepair really be an astnode?** (make it a helper function)
 - [ ] **add keyword tokens to every astnode**
 
 - [ ] shell cmd interpolation
@@ -16,8 +16,8 @@
 - [ ] implicit void returntype (defun foo() {})
 - [ ] seperate ast node for logical operators?
 - [ ] references/pointers (let foo'&int;)
-- [ ] lambda functions (like js)
-- [ ] `nil` vs `void`
+- [ ] arrays (let foo'int\[5\];)
+- [ ] object access (object:method(), object:member)
 - [x] function calls
 - [x] make assignment an expression
 - [x] fix this: if1 {} == if 1 {} or ret1 == ret 1

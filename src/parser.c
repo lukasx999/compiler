@@ -43,6 +43,16 @@ jmp_buf g_jmp_env;
 }
 
 
+
+#define CHECK_FOR_SEMICOLON() \
+    if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL)) \
+        parser_throw_error(p, ERROR_EXPECTED_SEMICOLON, NULL); \
+    p->current++;
+
+
+
+
+
 void parser_exit_errors(Parser *p) {
     // exit and show error count
     fprintf(stderr, "\nExiting with %s%s%s%d errors%s\n", COLOR_RED, COLOR_BOLD, COLOR_UNDERLINE, p->error_count, COLOR_END);
@@ -209,7 +219,7 @@ bool match_tokentypes(Parser *p, ...) {
 /* -- EXPRESSIONS -- */
 
 AstNode* rule_primary(Parser *p) {
-    // BNF: primary -> "true" | "false" | "nil" | NUMBER | STRING | "(" expression ")" | IDENTIFIER
+    // BNF: primary -> "true" | "false" | "nil" | INTEGER | FLOAT | STRING | "(" expression ")" | IDENTIFIER
 
     AstNode *new = NULL;
 
@@ -447,6 +457,7 @@ AstNode* rule_vardeclaration(Parser *p) {
     // BNF: vardeclaration -> "let" "mut"? IDTYPEPAIR ( "=" expression )? ";"
 
     if (match_tokentypes(p, TOK_KEYWORD_LET, MATCH_SENTINEL)) {
+        Token keyword = parser_get_current_token(p);
         ++p->current;
 
         bool mutable = false;
@@ -464,14 +475,12 @@ AstNode* rule_vardeclaration(Parser *p) {
             value = rule_expression(p);
         }
 
-        // check for semicolon
-        if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_EXPECTED_SEMICOLON, NULL);
-        ++p->current;
+        CHECK_FOR_SEMICOLON();
 
         StmtVarDeclaration op = { .idtypepair = idtypepair,
                                   .value      = value,
-                                  .mutable    = mutable };
+                                  .mutable    = mutable,
+                                  .keyword    = keyword };
 
         return ast_create_node(TYPE_VARDECLARATION, &op);
 
@@ -490,9 +499,7 @@ AstNode* rule_exprstatement(Parser *p) {
 
     AstNode *new = rule_expression(p);
 
-    // check for semicolon
-    if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
-        parser_throw_error(p, ERROR_EXPECTED_SEMICOLON, NULL);
+    CHECK_FOR_SEMICOLON();
 
     p->current++;
 
@@ -504,6 +511,7 @@ AstNode *rule_if(Parser *p) {
 // BNF: if -> "if" expression block ("else" block)?
 
     if (match_tokentypes(p, TOK_KEYWORD_IF, MATCH_SENTINEL)) {
+        Token keyword = parser_get_current_token(p);
         ++p->current;
 
         AstNode *expr = rule_expression(p);
@@ -520,7 +528,7 @@ AstNode *rule_if(Parser *p) {
                 parser_throw_error(p, ERROR_CUSTOM, "expected block after `else`!");
         }
 
-        StmtIf op = { .condition = expr, .then_body = if_block, .else_body = else_block };
+        StmtIf op = { .condition = expr, .then_body = if_block, .else_body = else_block, .keyword = keyword };
         return ast_create_node(TYPE_IF, &op);
 
     }
@@ -534,16 +542,14 @@ AstNode *rule_echo(Parser *p) {
 // BNF: echo -> "echo" expression ";"
 
     if (match_tokentypes(p, TOK_KEYWORD_ECHO, MATCH_SENTINEL)) {
+        Token keyword = parser_get_current_token(p);
         ++p->current;
 
         AstNode *expr = rule_expression(p);
 
-        // check for semicolon
-        if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_EXPECTED_SEMICOLON, NULL);
-        p->current++;
+        CHECK_FOR_SEMICOLON();
 
-        StmtEcho op = { expr };
+        StmtEcho op = { .value = expr, .keyword = keyword };
         return ast_create_node(TYPE_ECHO, &op);
 
     }
@@ -559,18 +565,16 @@ AstNode *rule_return(Parser *p) {
 // BNF: return -> "ret" expression? ";"
 
     if (match_tokentypes(p, TOK_KEYWORD_RETURN, MATCH_SENTINEL)) {
+        Token keyword = parser_get_current_token(p);
         ++p->current;
 
         AstNode *expr = NULL;
         if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
             expr = rule_expression(p);
 
-        // check for semicolon
-        if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_EXPECTED_SEMICOLON, NULL);
-        p->current++;
+        CHECK_FOR_SEMICOLON();
 
-        StmtReturn op = { expr };
+        StmtReturn op = { .value = expr, .keyword = keyword };
         return ast_create_node(TYPE_RETURN, &op);
 
     }
@@ -582,6 +586,7 @@ AstNode* rule_function(Parser *p) {
 // BNF: function -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE (body | ";")
 
     if (match_tokentypes(p, TOK_KEYWORD_DEFUN, MATCH_SENTINEL)) {
+        Token keyword = parser_get_current_token(p);
         ++p->current;
 
         if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL))
@@ -646,7 +651,8 @@ AstNode* rule_function(Parser *p) {
         StmtFunction op = { .identifier = identifier,
                             .body       = body,
                             .returntype = returntype,
-                            .parameters  = paramlist };
+                            .parameters = paramlist,
+                            .keyword    = keyword };
         return ast_create_node(TYPE_FUNCTION, &op);
 
     }
@@ -657,29 +663,17 @@ AstNode* rule_function(Parser *p) {
 
 
 AstNode* rule_statement(Parser *p) {
-// BNF: statement -> vardecl | if | function | return | block | expressionstatement
+// BNF: statement -> vardecl | if | function | return | echo | block | expressionstatement
 
     AstNode *new;
 
-    new = rule_vardeclaration(p);
-    if (new != NULL) return new;
-
-    new = rule_if(p);
-    if (new != NULL) return new;
-
-    new = rule_function(p);
-    if (new != NULL) return new;
-
-    new = rule_return(p);
-    if (new != NULL) return new;
-
-    new = rule_echo(p);
-    if (new != NULL) return new;
-
-    new = rule_block(p);
-    if (new != NULL) return new;
-
-    new = rule_exprstatement(p);
+    new = rule_vardeclaration(p); if (new != NULL) return new;
+    new = rule_if            (p); if (new != NULL) return new;
+    new = rule_function      (p); if (new != NULL) return new;
+    new = rule_return        (p); if (new != NULL) return new;
+    new = rule_echo          (p); if (new != NULL) return new;
+    new = rule_block         (p); if (new != NULL) return new;
+    new = rule_exprstatement (p);
 
     return new;
 

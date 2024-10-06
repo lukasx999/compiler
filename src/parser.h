@@ -73,28 +73,30 @@ typedef struct {
     AstNode *idtypepair; // [idtypepair]
     AstNode *value;      // [expr] | NULL = no initialization
     bool mutable;
+    Token keyword;
 } StmtVarDeclaration;
 
 typedef struct {
-    Token identifier, returntype;
+    Token identifier, returntype, keyword;
     AstNodeList parameters;
     AstNode *body; // [block] | NULL = declaration
 } StmtFunction;
 
 typedef struct {
     AstNode *value; // [expr]
-    // Token keyword; // TODO: this
+    Token keyword;
 } StmtReturn;
 
 typedef struct {
     AstNode *value; // [expr]
-    // Token keyword; // TODO: this
+    Token keyword;
 } StmtEcho;
 
 typedef struct {
     AstNode *condition; // [expr]
     AstNode *then_body; // [block]
     AstNode *else_body; // [block]
+    Token keyword;
 } StmtIf;
 
 /* -- ---------- -- */

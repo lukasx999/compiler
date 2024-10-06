@@ -1,4 +1,5 @@
 defun main() -> void {
     echo "foo";
     echo "bar";
+    ret 45;
 }

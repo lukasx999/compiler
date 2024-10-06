@@ -15,6 +15,9 @@
 #define GET_ARRAY_SIZE(array) (sizeof((array)) / sizeof(*(array)))
 
 
+
+
+
 #define PUNCT_WHITESPACE          ' '
 #define PUNCT_FLOAT_DELIM         '.'
 #define PUNCT_DOT                 '.'
