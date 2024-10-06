@@ -97,6 +97,7 @@ void _rec_compile(AstNode *root, Sections *sections) {
 
             assert(root->ast_echo.value->type == TYPE_LITERAL);
             assert(root->ast_echo.value->ast_literal.operator.type == TOK_LITERAL_STRING);
+
             char *message = root->ast_echo.value->ast_literal.operator.value;
 
             char *out_len = malloc(BUFSIZE * sizeof(char));

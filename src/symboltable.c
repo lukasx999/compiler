@@ -162,7 +162,7 @@ populate_addresses(Table *root) {
 
 
 Table*
-check_semantics(AstNode *root) {
+construct_symboltable(AstNode *root) {
 
     Table *table = traverse(root, NULL);
     populate_addresses(table);

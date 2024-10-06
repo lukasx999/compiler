@@ -75,7 +75,7 @@ extern Table* table_create(Table *parent);
 
 
 
-extern Table* check_semantics(AstNode *root);
+extern Table* construct_symboltable(AstNode *root);
 
 
 #endif // _SEMANTIC_H

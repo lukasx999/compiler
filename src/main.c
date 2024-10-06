@@ -91,7 +91,7 @@ void run_from_file(char *filename) {
     AstNode *root = parse(tokens, source, filename);
     print_ast(root);
 
-    Table *table = check_semantics(root);
+    Table *table = construct_symboltable(root);
     print_symboltable(table);
     compile(root);
 
