@@ -1,7 +1,7 @@
 
-echo: echo.asm
-	nasm $^ -felf64 -o echo.o -g -F dwarf
-	cc echo.o -no-pie -ggdb -O0 -o out
+strings: strings.asm
+	nasm $^ -felf64 -o strings.o -g -F dwarf
+	cc strings.o -no-pie -ggdb -O0 -o out
 	./out
 
 all: mod1.asm mod2.asm

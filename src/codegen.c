@@ -148,7 +148,6 @@ void compile(AstNode *root) {
 
     _rec_compile(root, &sections);
 
-
     FILE *file = fopen(ASM_FILENAME, "w");
     vec_extend(&sections.text, &sections.data); // merge sections
 
