@@ -6,9 +6,10 @@
 #include <string.h>
 #include <assert.h>
 #include <stddef.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/mman.h>
 
 #include "lexer.h"
 #include "repr.h"
@@ -57,7 +58,8 @@ void repl(void) {
 
 
 
-char* read_file(char *filename) {
+#if 0
+char* read_file(const char *filename) {
 
     FILE *f = fopen(filename, "r");
     char c;
@@ -77,9 +79,19 @@ char* read_file(char *filename) {
     return chars;
 
 }
+#endif
+
+char* read_file(const char *filename) {
+
+    int fd = open(filename, 0);
+    struct stat buf;
+    fstat(fd, &buf);
+    return mmap(NULL, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0); // mmap is based!
+
+}
 
 
-void run_from_file(char *filename) {
+void run_from_file(const char *filename) {
 
     char *source = read_file(filename);
     // print_input(source);

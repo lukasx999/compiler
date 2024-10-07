@@ -1,3 +1,7 @@
+
+defun foo() -> void {
+}
+
 defun main() -> void {
     echo "foo";
     echo "bar";

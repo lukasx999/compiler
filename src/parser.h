@@ -147,13 +147,13 @@ typedef struct {
     uint32_t   error_count; // if 0 -> no errors
 
     // these are mainly just for errors
-    char       *source;     // source code: for errors
+    const char *source;     // source code: for errors
     const char *filename;   // if empty -> repl
 } Parser;
 
 extern Token    parser_get_current_token (Parser *p);
 extern Token    parser_get_token_by_index(Parser *p, size_t index);
-extern AstNode* parse(TokenList tokens, char *source, const char *filename); // returns NULL when there are no tokens to be parsed
+extern AstNode* parse(TokenList tokens, const char *source, const char *filename); // returns NULL when there are no tokens to be parsed
 
 
 /* -- Productions (rules) for the grammar -- */

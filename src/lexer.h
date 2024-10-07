@@ -192,7 +192,7 @@ is_datatype(enum TokenType type) {
 }
 
 
-static char token_repr[][BUFSIZE] = {
+static const char token_repr[][BUFSIZE] = {
 
     [TOK_EOF]                   = "eof",
     [TOK_INVALID]               = "invalid",

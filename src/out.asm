@@ -1,6 +1,14 @@
 section .text
 
 ;--- function ---
+foo:
+	push rbp
+	mov rbp, rsp
+	pop rbp
+	ret
+;--- end ---
+
+;--- function ---
 global main
 main:
 	push rbp

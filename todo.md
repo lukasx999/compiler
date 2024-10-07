@@ -1,6 +1,7 @@
 # TODO
 - [ ] **should idtypepair really be an astnode?** (make it a helper function)
 - [ ] **add keyword tokens to every astnode**
+- [ ] add a license
 
 - [ ] shell cmd interpolation
 - [ ] nvim bufferline / bottom left text

@@ -711,7 +711,7 @@ AstNode* rule_program(Parser *p) {
 //--------------------------------------------------------------------------------
 
 AstNode*
-parse(TokenList tokens, char *source, const char *filename) {
+parse(TokenList tokens, const char *source, const char *filename) {
 
     Parser p = {
         .tokens      = tokens,
