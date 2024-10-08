@@ -103,8 +103,7 @@ void run_from_file(const char *filename) {
     AstNode *root = parse(tokens, source, filename);
     print_ast(root);
 
-    Table *table = construct_symboltable(root);
-    print_symboltable(table);
+    construct_symboltable(root);
     // compile(root);
 
 }

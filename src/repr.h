@@ -24,7 +24,7 @@
 
 
 
-extern void print_symboltable    (Table *root);
+// extern void print_symboltable    (Table *root);
 extern void print_input          (const char *input);
 extern void print_tokens_columns (TokenList tokens);
 extern void print_tokens_stream  (TokenList tokens);

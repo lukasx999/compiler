@@ -21,6 +21,7 @@ static void print_indent(uint32_t level) {
 
 
 
+#if 0
 void
 _rec_print_symboltable(Table *root, int level) {
 
@@ -48,6 +49,7 @@ print_symboltable(Table *root) {
     puts("\n---------------------\n");
 
 }
+#endif
 
 
 
