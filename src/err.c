@@ -35,7 +35,7 @@ get_offset(size_t pos, char *source) {
 
 
 void
-err_correct(Token tok, const char *message, const char *correct, char *source, const char *filename) {
+err_correct(Token tok, const char *message, const char *correct, const char *source, const char *filename) {
 
     print_error_header(tok, filename, message);
 
@@ -62,7 +62,7 @@ err_correct(Token tok, const char *message, const char *correct, char *source, c
 
 
 void
-err_throw(Token tok, const char *message, char *source, const char *filename) {
+err_throw(Token tok, const char *message, const char *source, const char *filename) {
 
     print_error_header(tok, filename, message);
 

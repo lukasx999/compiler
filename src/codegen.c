@@ -71,7 +71,7 @@ void _rec_compile(AstNode *root, Sections *sections) {
                 append_string(&sections->text, "global main\n");
 
 
-            char *buf = malloc(BUFSIZE * sizeof(char));
+            char *buf = malloc(BUFSIZE_BIG * sizeof(char));
             sprintf(buf, "%s:\n", root->ast_function.identifier.value);
             append_string(&sections->text, buf);
 
@@ -158,13 +158,23 @@ void compile(AstNode *root) {
     fclose(file);
 
 
-    #if 1
+    #if 0
     int id = fork();
-    if (!id) execlp("nasm", "nasm", ASM_FILENAME, "-felf64", "-o", OBJ_FILENAME, "-g", "-F", "dwarf", NULL);
+    if (!id) execlp("nasm", "nasm",
+                    ASM_FILENAME,
+                    "-felf64",
+                    "-o", OBJ_FILENAME,
+                    "-g", "-F", "dwarf",
+                    NULL);
     wait(NULL);
 
     id = fork();
-    if (!id) execlp("cc", "cc", OBJ_FILENAME, "-no-pie", "-ggdb", "-O0", "-o", BIN_FILENAME, NULL);
+    if (!id) execlp("cc", "cc",
+                    OBJ_FILENAME,
+                    "-no-pie",
+                    "-ggdb", "-O0",
+                    "-o", BIN_FILENAME,
+                    NULL);
     wait(NULL);
     #endif
 

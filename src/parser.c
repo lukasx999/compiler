@@ -18,7 +18,6 @@ jmp_buf g_jmp_env;
 
 
 #define MAX_ERRORS 15
-
 #define MATCH_SENTINEL -1
 
 #define BINARYEXPR(callback, ...) {                            \
@@ -44,8 +43,8 @@ jmp_buf g_jmp_env;
 
 
 
-#define CHECK_FOR_SEMICOLON() \
-    if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL)) \
+#define CHECK_FOR_SEMICOLON()                                  \
+    if (!match_tokentypes(p, TOK_SEMICOLON, MATCH_SENTINEL))   \
         parser_throw_error(p, ERROR_EXPECTED_SEMICOLON, NULL); \
     p->current++;
 
@@ -58,8 +57,6 @@ void parser_exit_errors(Parser *p) {
     fprintf(stderr, "\nExiting with %s%s%s%d errors%s\n", COLOR_RED, COLOR_BOLD, COLOR_UNDERLINE, p->error_count, COLOR_END);
     exit(1);
 }
-
-
 
 
 
@@ -116,7 +113,7 @@ void parser_throw_error(Parser *p, enum ErrorType type, const char *message) {
 
 // `operation` gets casted to corresponding type, according to `Node_type`
 AstNode*
-ast_create_node(enum AstNode_type type, void *operation) {
+ast_create_node(enum AstNode_type type, const void *operation) {
 
     AstNode *new = malloc(sizeof(AstNode));
 
@@ -124,19 +121,19 @@ ast_create_node(enum AstNode_type type, void *operation) {
 
     switch (type) {
 
-        case TYPE_BINARYOP:       new->ast_binaryop    = *(ExprBinaryOp*)        operation; break;
-        case TYPE_UNARYOP:        new->ast_unaryop     = *(ExprUnaryOp*)         operation; break;
-        case TYPE_LITERAL:        new->ast_literal     = *(ExprLiteral*)         operation; break;
-        case TYPE_GROUPING:       new->ast_grouping    = *(ExprGrouping*)        operation; break;
-        case TYPE_ASSIGN:         new->ast_assign      = *(ExprAssign*)          operation; break;
-        case TYPE_CALL:           new->ast_call        = *(ExprCall*)            operation; break;
-        case TYPE_VARDECLARATION: new->ast_vardecl     = *(StmtVarDeclaration*)  operation; break;
-        case TYPE_IF:             new->ast_if          = *(StmtIf*)              operation; break;
-        case TYPE_FUNCTION:       new->ast_function    = *(StmtFunction*)        operation; break;
-        case TYPE_RETURN:         new->ast_return      = *(StmtReturn*)          operation; break;
-        case TYPE_ECHO:           new->ast_echo        = *(StmtEcho*)            operation; break;
-        case TYPE_BLOCK:          new->ast_block       = *(Block*)               operation; break;
-        case TYPE_IDTYPEPAIR:     new->ast_idtypepair  = *(IdTypePair*)          operation; break;
+        case TYPE_BINARYOP:       new->ast_binaryop    = *(ExprBinaryOp      *) operation; break;
+        case TYPE_UNARYOP:        new->ast_unaryop     = *(ExprUnaryOp       *) operation; break;
+        case TYPE_LITERAL:        new->ast_literal     = *(ExprLiteral       *) operation; break;
+        case TYPE_GROUPING:       new->ast_grouping    = *(ExprGrouping      *) operation; break;
+        case TYPE_ASSIGN:         new->ast_assign      = *(ExprAssign        *) operation; break;
+        case TYPE_CALL:           new->ast_call        = *(ExprCall          *) operation; break;
+        case TYPE_VARDECLARATION: new->ast_vardecl     = *(StmtVarDeclaration*) operation; break;
+        case TYPE_IF:             new->ast_if          = *(StmtIf            *) operation; break;
+        case TYPE_FUNCTION:       new->ast_function    = *(StmtFunction      *) operation; break;
+        case TYPE_RETURN:         new->ast_return      = *(StmtReturn        *) operation; break;
+        case TYPE_ECHO:           new->ast_echo        = *(StmtEcho          *) operation; break;
+        case TYPE_BLOCK:          new->ast_block       = *(Block             *) operation; break;
+        case TYPE_IDTYPEPAIR:     new->ast_idtypepair  = *(IdTypePair        *) operation; break;
 
         default: assert(!"non-existant type"); break;
 
@@ -713,13 +710,11 @@ AstNode* rule_program(Parser *p) {
 AstNode*
 parse(TokenList tokens, const char *source, const char *filename) {
 
-    Parser p = {
-        .tokens      = tokens,
-        .source      = source,
-        .current     = 0,
-        .filename    = filename,
-        .error_count = 0,
-    };
+    Parser p = { .tokens      = tokens,
+                 .source      = source,
+                 .current     = 0,
+                 .filename    = filename,
+                 .error_count = 0, };
 
     AstNode *root = rule_program(&p);
 

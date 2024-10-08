@@ -105,7 +105,7 @@ void run_from_file(const char *filename) {
 
     Table *table = construct_symboltable(root);
     print_symboltable(table);
-    compile(root);
+    // compile(root);
 
 }
 

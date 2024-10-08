@@ -131,8 +131,8 @@ struct AstNode {
 
 };
 
-extern AstNode* ast_create_node (enum AstNode_type type, void *operation);
-extern void ast_free_nodes (AstNode *root);
+extern AstNode* ast_create_node(enum AstNode_type type, const void *operation);
+extern void     ast_free_nodes (AstNode *root);
 
 /* -- --- -- */
 

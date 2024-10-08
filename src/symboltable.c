@@ -127,6 +127,7 @@ traverse(AstNode *root, Table *table) {
     }
 
     // return new;
+    return NULL;
 
 }
 

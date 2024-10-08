@@ -30,7 +30,7 @@ _rec_print_symboltable(Table *root, int level) {
         printf("sym: %s%s%s | ",     COLOR_RED, col.identifier, COLOR_END);
         printf("type: %s%s%s | ",   COLOR_BLUE, datatype_repr[col.type], COLOR_END);
         printf("addr: %s%lu%s | ", COLOR_BLUE, col.address, COLOR_END);
-        printf("stackframe: %s%b\n%s", COLOR_BLUE, root->stack_frame, COLOR_END);
+        printf("stackframe: %s%d\n%s", COLOR_BLUE, root->stack_frame, COLOR_END);
     }
 
     ++level;

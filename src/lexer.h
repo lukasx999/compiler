@@ -11,7 +11,8 @@
 
 #include "vector.h"
 
-#define BUFSIZE 300
+#define BUFSIZE     300
+#define BUFSIZE_BIG 500
 #define GET_ARRAY_SIZE(array) (sizeof((array)) / sizeof(*(array)))
 
 
