@@ -1,0 +1,6 @@
+defun main() -> void {
+
+    let mut foo'int = 1+2+3;
+
+    ret 0;
+}

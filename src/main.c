@@ -79,7 +79,8 @@ char* read_file(const char *filename) {
     return chars;
 
 }
-#endif
+
+#else
 
 char* read_file(const char *filename) {
 
@@ -89,6 +90,7 @@ char* read_file(const char *filename) {
     return mmap(NULL, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0); // mmap is based!
 
 }
+#endif
 
 
 void run_from_file(const char *filename) {

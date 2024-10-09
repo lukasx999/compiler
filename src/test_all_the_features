@@ -1,0 +1,37 @@
+
+
+let global'int = 123;
+let mut global'int = 123;
+
+
+defun $$$func(arg'int, args'str) -> bool {
+    1+(2+3)*1*2*3/5;
+    ret 1+2+3;
+}
+
+true || false && true;
+
+if true {
+    echo "hi";
+} else {
+    if false && true {}
+}
+
+
+defun ____main48320984092___() -> void {
+
+    ___identifier123___$$$;
+
+    let foo'int;
+    let foo'int = 1;
+
+    let mut foo'int;
+    let mut foo'int = 1;
+
+    foo();
+    foo()()();
+    foo(1);
+    foo(1, 2, 3+4+5);
+
+    ret 45;
+}

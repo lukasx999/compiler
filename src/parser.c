@@ -14,7 +14,11 @@
 #include "err.h"
 
 
+// GLOBALS
 jmp_buf g_jmp_env;
+
+
+#define PARSER_NOERRORS 0
 
 
 #define MAX_ERRORS 15
@@ -62,6 +66,8 @@ void parser_exit_errors(Parser *p) {
 
 void parser_throw_error(Parser *p, enum ErrorType type, const char *message) {
 
+    #if !PARSER_NOERRORS
+
     // too many errors...
     if (p->error_count >= MAX_ERRORS) parser_exit_errors(p);
     ++p->error_count;
@@ -105,6 +111,8 @@ void parser_throw_error(Parser *p, enum ErrorType type, const char *message) {
 
     parser_synchronize(p);
     longjmp(g_jmp_env, 1); // return to global scope
+
+    #endif
 
 }
 
@@ -294,6 +302,14 @@ AstNode* rule_call(Parser *p) {
     return new;
 
 }
+
+
+
+
+
+
+
+
 
 
 AstNode* rule_unary(Parser *p) {
@@ -495,11 +511,7 @@ AstNode* rule_exprstatement(Parser *p) {
 // eg: function call: evaluates and has possible side effect
 
     AstNode *new = rule_expression(p);
-
     CHECK_FOR_SEMICOLON();
-
-    p->current++;
-
     return new;
 }
 

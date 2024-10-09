@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean test
 
 CC=gcc
 PYTHON=python3
@@ -7,8 +7,7 @@ CFLAGS=-Wall -Wextra -std=c17 -pedantic -ggdb -O0 $(EXTRAFLAGS) -I./extra
 BIN=compiler
 TEST=test
 
-
-all: objects grammar.txt
+all: objects grammar.txt test
 
 grammar.txt: getgrammar.py parser.c
 	$(PYTHON) $<
@@ -18,6 +17,9 @@ objects: main.o lexer.o parser.o repr.o extra/vector.o codegen.o symboltable.o e
 
 %.o: %.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
+
+test:
+	$(PYTHON) test.py
 
 clean:
 	rm *.o $(BIN)
