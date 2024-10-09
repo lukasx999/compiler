@@ -4,4 +4,6 @@ a.out
 venv/
 __pycache__/
 compiler
+out
+*.s
 *.o
