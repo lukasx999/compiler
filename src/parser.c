@@ -14,8 +14,10 @@
 #include "err.h"
 
 
+
 // GLOBALS
 jmp_buf g_jmp_env;
+
 
 
 #define PARSER_NOERRORS 0
