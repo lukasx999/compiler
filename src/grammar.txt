@@ -2,14 +2,13 @@
 
 program             -> statement* EOF
 statement           -> vardecl | if | function | return | echo | block | expressionstatement
-function            -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE (body | ";")
+function            -> "defun" IDENTIFIER "(" paramlist ")" "->" DATATYPE (body | ";")
 return              -> "ret" expression? ";"
 echo                -> "echo" expression ";"
 if                  -> "if" expression block ("else" block)?
 expressionstatement -> expression ";"
 vardeclaration      -> "let" "mut"? IDTYPEPAIR ( "=" expression )? ";"
 block               -> "{" statement* "}"
-idtypepair          -> IDENTIFIER "'" DATATYPE
 expression          -> equality
 assign              -> rule_logic_or "=" rule_assign | rule_logic_or
 logic_or            -> logic_and ( "||" logic_and )*
@@ -21,3 +20,5 @@ factor              -> unary ( ( "/" | "*" ) unary )*
 unary               -> ( "!" | "-" | "/" ) unary | primary
 call                -> primary ( "(" ( expression ( "," expression )* )? ")" )*
 primary             -> "true" | "false" | "nil" | INTEGER | FLOAT | STRING | "(" expression ")" | IDENTIFIER
+paramlist           -> (idtypepair ("," idtypepair)*)?
+idtypepair          -> IDENTIFIER "'" DATATYPE

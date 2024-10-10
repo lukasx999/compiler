@@ -9,9 +9,9 @@
 typedef struct {
     char *identifier;
     uint64_t scope_level;
-} ht_key_t;
+} ht_Key_t;
 
-typedef ht_key_t Key_t;
+typedef ht_Key_t Key_t;
 typedef SymbolTableEntry Value_t;
 
 typedef struct {
@@ -41,6 +41,7 @@ extern bool    ht_exists      (HashTable *ht, Key_t  key );
 extern size_t  ht_get_elements(HashTable *ht             );
 extern void    ht_insert      (HashTable *ht, KVPair data);
 extern void    ht_destroy     (HashTable *ht);
+extern void    ht_print       (HashTable *ht);
 
 
 

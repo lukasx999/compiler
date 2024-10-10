@@ -29,7 +29,7 @@ ht_hash(HashTable *ht, Key_t key) {
     for (size_t i = 0; i < strlen(key.identifier); ++i)
         sum += key.identifier[i] * i;
 
-    sum *= key.scope_level;
+    sum *= key.scope_level || 1;
 
     return sum % ht->capacity;
 
@@ -43,30 +43,6 @@ create_node(KVPair data) {
     new->data = data;
     new->next = NULL;
     return new;
-}
-
-
-
-void
-ht_delete(HashTable *ht, Key_t key) {
-    int hsh = ht_hash(ht, key);
-
-    assert((ht->buckets[hsh] != NULL) && "item does not exist!");
-
-    Node *current = ht->buckets[hsh];
-    Node *before = NULL;
-    while (!compare_keys(current->data.key, key)) {
-        before = current;
-        current = current->next;
-    }
-
-    if (before != NULL)
-        before->next = current->next;
-    else
-        ht->buckets[hsh] = current->next;
-
-    free(current);
-
 }
 
 
@@ -175,12 +151,12 @@ ht_insert(HashTable *ht, KVPair data) {
 void ht_print(HashTable *ht) {
     for (size_t i = 0; i < ht->capacity; ++i) {
         if (ht->buckets[i] == NULL) continue;
-        printf("%lu: %s(%d)", i, ht->buckets[i]->data.key, ht->buckets[i]->data.value);
+        printf("%lu: %s(%lu)", i, ht->buckets[i]->data.key.identifier, ht->buckets[i]->data.value.rbp_offset);
 
         if (ht->buckets[i]->next == NULL) { puts(""); continue; }
         Node *current = ht->buckets[i]->next;
             for (;;) {
-                printf(" -> %s(%d)", current->data.key, current->data.value);
+                printf(" -> %s(%lu)", current->data.key.identifier, current->data.value.rbp_offset);
                 if (current->next == NULL) break;
                 current = current->next;
             }

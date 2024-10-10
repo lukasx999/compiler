@@ -56,6 +56,13 @@ jmp_buf g_jmp_env;
 
 
 
+#define CHECK_FOR_ANYTHING(token, error_message)                  \
+        if (!match_tokentypes(p, (token), MATCH_SENTINEL))        \
+            parser_throw_error(p, ERROR_CUSTOM, (error_message)); \
+        ++p->current;
+
+
+
 
 
 void parser_exit_errors(Parser *p) {
@@ -218,6 +225,59 @@ bool match_tokentypes(Parser *p, ...) {
 
 
 
+/* -- UTILS -- */
+
+IdTypePair util_idtypepair(Parser *p) {
+    // BNF: idtypepair -> IDENTIFIER "'" DATATYPE
+    // eg: foo'int;
+
+    if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL))
+        parser_throw_error(p, ERROR_CUSTOM, "expected identifier");
+
+    Token identifier = parser_get_current_token(p);
+    p->current++;
+
+    if (!match_tokentypes(p, TOK_SINGLEQUOTE, MATCH_SENTINEL))
+        parser_throw_error(p, ERROR_TYPE_SPECIFIER_MISSING, NULL);
+
+    p->current++;
+    Token datatype = parser_get_current_token(p);
+    // dont check valid types, because of custom classes
+    p->current++;
+
+    IdTypePair pair = { .identifier = identifier, .type = datatype };
+    return pair;
+
+}
+
+
+
+
+vec_Vector util_paramlist(Parser *p) {
+// BNF: paramlist -> (idtypepair ("," idtypepair)*)?
+
+
+    vec_Vector paramlist;
+    vec_init(&paramlist, sizeof(IdTypePair), 5, 2);
+
+    if (match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL)) {
+        while (1) {
+            IdTypePair new = util_idtypepair(p);
+            vec_push(&paramlist, &new);
+
+            if (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL)) {
+                ++p->current;
+                continue;
+            }
+            else break;
+        }
+    }
+    else paramlist.blob = NULL;
+
+    return paramlist;
+
+}
+
 
 
 
@@ -239,10 +299,8 @@ AstNode* rule_primary(Parser *p) {
         new = ast_create_node(TYPE_GROUPING, &operation);
 
         // check for matched paren
-        if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_CUSTOM, "unmatched parenthesis");
+        CHECK_FOR_ANYTHING(TOK_RPAREN, "unmatched parenthesis (right)")
 
-        p->current++;
 
     } else if (match_tokentypes(p, TOK_INVALID, MATCH_SENTINEL)) {
         parser_throw_error(p, ERROR_CUSTOM, "invalid token");
@@ -292,10 +350,8 @@ AstNode* rule_call(Parser *p) {
         } else
             arglist.blob = NULL;
 
-        if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_CUSTOM, "closing paren missing");
+        CHECK_FOR_ANYTHING(TOK_RPAREN, "closing paren missing")
 
-        ++p->current;
         ExprCall op = { .callee = new, .arguments = arglist};
         new = ast_create_node(TYPE_CALL, &op);
 
@@ -405,32 +461,6 @@ AstNode* rule_expression(Parser *p) {
 /* -- STATEMENTS -- */
 
 
-AstNode* rule_idtype_pair(Parser *p) {
-    // BNF: idtypepair -> IDENTIFIER "'" DATATYPE
-    // eg: foo'int;
-
-    if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL))
-        parser_throw_error(p, ERROR_CUSTOM, "expected identifier");
-
-    Token identifier = parser_get_current_token(p);
-    p->current++;
-
-    if (!match_tokentypes(p, TOK_SINGLEQUOTE, MATCH_SENTINEL))
-        parser_throw_error(p, ERROR_TYPE_SPECIFIER_MISSING, NULL);
-
-    p->current++;
-    Token datatype = parser_get_current_token(p);
-    // dont check valid types, because of custom classes
-    p->current++;
-
-    IdTypePair op = { .identifier = identifier, .type = datatype };
-    return ast_create_node(TYPE_IDTYPEPAIR, &op);
-
-}
-
-
-
-
 AstNode* rule_block(Parser *p) {
     // BNF: block -> "{" statement* "}"
     // aka: scope
@@ -447,10 +477,8 @@ AstNode* rule_block(Parser *p) {
         }
 
         // check for matching brace
-        if (!match_tokentypes(p, TOK_RBRACE, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_CUSTOM, "unmatched brace");
+        CHECK_FOR_ANYTHING(TOK_RBRACE, "unmatched brace (right)")
 
-        p->current++;
 
         Block op = { .statements = list, .root = false };
         return ast_create_node(TYPE_BLOCK, &op);
@@ -481,8 +509,7 @@ AstNode* rule_vardeclaration(Parser *p) {
             ++p->current;
         }
 
-
-        AstNode *idtypepair = rule_idtype_pair(p);
+        IdTypePair pair = util_idtypepair(p);
 
         AstNode *value = NULL;
         if (match_tokentypes(p, TOK_ASSIGN, MATCH_SENTINEL)) {
@@ -492,7 +519,7 @@ AstNode* rule_vardeclaration(Parser *p) {
 
         CHECK_FOR_SEMICOLON();
 
-        StmtVarDeclaration op = { .idtypepair = idtypepair,
+        StmtVarDeclaration op = { .idtypepair = pair,
                                   .value      = value,
                                   .mutable    = mutable,
                                   .keyword    = keyword };
@@ -594,56 +621,22 @@ AstNode *rule_return(Parser *p) {
 }
 
 AstNode* rule_function(Parser *p) {
-// BNF: function -> "defun" IDENTIFIER "(" (idtypepair ("," idtypepair)*)? ")" "->" DATATYPE (body | ";")
+// BNF: function -> "defun" IDENTIFIER "(" paramlist ")" "->" DATATYPE (body | ";")
 
     if (match_tokentypes(p, TOK_KEYWORD_DEFUN, MATCH_SENTINEL)) {
         Token keyword = parser_get_current_token(p);
         ++p->current;
 
-        if (!match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_CUSTOM, "expected identifier");
-
         Token identifier = parser_get_current_token(p);
-        ++p->current;
+        CHECK_FOR_ANYTHING(TOK_LITERAL_IDENTIFIER, "expected identifier")
+        CHECK_FOR_ANYTHING(TOK_LPAREN, "unmatched parenthesis (left)")
 
-        if (!match_tokentypes(p, TOK_LPAREN, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_CUSTOM, "unmatched parenthesis");
-        ++p->current;
+        vec_Vector paramlist = util_paramlist(p);
 
-
-        vec_Vector paramlist;
-        vec_init(&paramlist, sizeof(AstNode), 5, 2);
-
-        if (match_tokentypes(p, TOK_LITERAL_IDENTIFIER, MATCH_SENTINEL)) {
-            while (1) {
-                AstNode *new = rule_idtype_pair(p);
-                vec_push(&paramlist, new);
-
-                if (match_tokentypes(p, TOK_COMMA, MATCH_SENTINEL)) {
-                    ++p->current;
-                    continue;
-                }
-                else break;
-            }
-        }
-        else paramlist.blob = NULL;
-
-
-        if (!match_tokentypes(p, TOK_RPAREN, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_CUSTOM, "unmatched parenthesis");
-        ++p->current;
-
-
-
-        if (!match_tokentypes(p, TOK_ARROW, MATCH_SENTINEL))
-            parser_throw_error(p, ERROR_EXPECTED_ARROW, NULL);
-        ++p->current;
-
+        CHECK_FOR_ANYTHING(TOK_RPAREN, "unmatched parenthesis (right)")
+        CHECK_FOR_ANYTHING(TOK_ARROW, "expected arrow")
 
         Token returntype = parser_get_current_token(p);
-        if (!is_datatype(returntype.type))
-            parser_throw_error(p, ERROR_EXPECTED_RETURNTYPE, NULL);
-
         ++p->current;
 
         AstNode *body;

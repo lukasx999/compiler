@@ -1,6 +1,6 @@
-defun main() -> void {
 
-    let mut foo'int = 1+2+3;
-
-    ret 0;
+defun main(argc'int, args'str) -> fjskl {
+    let mut foo'fjlks = 45;
+    let mut bar'int = 45;
+    let mut baz'int = 45;
 }

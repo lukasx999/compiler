@@ -59,6 +59,7 @@ typedef struct {
     Token identifier, type;
 } IdTypePair;
 
+
 // statement sequence = scope
 typedef struct {
     AstNodeList statements;
@@ -70,7 +71,7 @@ typedef struct {
 /* -- STATEMENTS -- */
 
 typedef struct {
-    AstNode *idtypepair; // [idtypepair]
+    IdTypePair idtypepair;
     AstNode *value;      // [expr] | NULL = no initialization
     bool mutable;
     Token keyword;
@@ -78,7 +79,7 @@ typedef struct {
 
 typedef struct {
     Token identifier, returntype, keyword;
-    AstNodeList parameters;
+    vec_Vector parameters;
     AstNode *body; // [block] | NULL = declaration
 } StmtFunction;
 
@@ -174,12 +175,14 @@ extern AstNode
 *rule_program        (Parser *p),
 *rule_if             (Parser *p),
 *rule_block          (Parser *p),
-*rule_idtype_pair    (Parser *p),
 *rule_assign         (Parser *p),
 *rule_exprstatement  (Parser *p),
 *rule_statement      (Parser *p),
 *rule_statement      (Parser *p),
 *rule_program        (Parser *p);
+
+// etc
+extern IdTypePair util_idtypepair(Parser *p);
 
 /* -- ----------------------------------- -- */
 

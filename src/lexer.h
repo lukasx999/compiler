@@ -39,6 +39,7 @@
 #define PUNCT_RBRACKET            ']'
 #define PUNCT_SINGLEQUOTE         '\''
 #define PUNCT_DOLLARSIGN          '$'
+#define PUNCT_BACKTICK            '`'
 #define PUNCT_NULLBYTE            '\0'
 
 

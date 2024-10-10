@@ -120,7 +120,14 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
             print_indent(++level);
             printf("%s(target)%s\n", COLOR_GREEN, COLOR_END);
-            _rec_print_ast(root->ast_vardecl.idtypepair, ++level);
+
+
+            print_indent(++level);
+            level++;
+            IdTypePair *pair = &root->ast_vardecl.idtypepair;
+            printf("%sidtypepair `%s` of `%s`%s\n", COLOR_YELLOW_HIGH, pair->identifier.value, token_repr[pair->type.type], COLOR_END);
+            level--;
+
 
             print_indent(--level);
             printf("%s(value)%s\n", COLOR_GREEN, COLOR_END);
@@ -153,12 +160,15 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
             size_t size = root->ast_function.parameters.size;
 
-            level++;
-            for (size_t i=0; i<size; ++i) {
 
-                AstNode *node = vec_get(&root->ast_function.parameters, i);
-                _rec_print_ast(node, level);
+            level++;
+            for (size_t i = 0; i < size; ++i) {
+                print_indent(level++);
+                IdTypePair pair = *(IdTypePair*) vec_get(&root->ast_function.parameters, i);
+                printf("%sidtypepair `%s` of `%s`%s\n", COLOR_YELLOW_HIGH, pair.identifier.value, token_repr[pair.type.type], COLOR_END);
+                level--;
             }
+
 
             print_indent(--level);
             printf("%s(body)%s\n", COLOR_GREEN, COLOR_END);
@@ -222,9 +232,6 @@ static void _rec_print_ast(AstNode *root, uint32_t level) {
 
         } break;
 
-        case TYPE_IDTYPEPAIR: {
-            printf("%sidtypepair `%s` of `%s`%s\n", COLOR_YELLOW_HIGH, root->ast_idtypepair.identifier.value, token_repr[root->ast_idtypepair.type.type], COLOR_END);
-        } break;
 
 
         default: {

@@ -1,14 +1,10 @@
 # TODO
 - [ ] **should idtypepair really be an astnode?** (make it a helper function)
-- [ ] **add keyword tokens to every astnode**
-- [ ] add a license
 
 - [ ] shell cmd interpolation
-- [ ] nvim bufferline / bottom left text
-- [ ] else if
+- [ ] nvim bufferline
 - [ ] convert grammar to real BNF
 - [ ] Better error handling with tokens
-- [ ] Remove Tokens from ast nodes?
 - [ ] tests
 - [ ] free astnodes
 - [ ] preprocessor for macros and removing comments
@@ -19,7 +15,9 @@
 - [ ] references/pointers (let foo'&int;)
 - [ ] arrays (let foo'int\[5\];)
 - [ ] object access (object:method(), object:member)
+- [ ] else if
 - [x] function calls
+- [x] **add keyword tokens to every astnode**
 - [x] make assignment an expression
 - [x] fix this: if1 {} == if 1 {} or ret1 == ret 1
 - [x] function declarations (NULL pointer)
@@ -32,6 +30,7 @@
 - [x] generic dynamic array
 - [x] Symbol Table datastructure
 - [x] move error handling to seperate module
+- [x] add a license
  - stack of lists (temporary)
  - stack w/ pushcount (temporary)
  - **tree of lists** (every node has a pointer to the parent)
