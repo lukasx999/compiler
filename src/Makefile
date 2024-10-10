@@ -12,7 +12,7 @@ all: objects grammar.txt test
 grammar.txt: getgrammar.py parser.c
 	$(PYTHON) $<
 
-objects: main.o lexer.o parser.o repr.o extra/vector.o codegen.o symboltable.o err.o
+objects: main.o lexer.o parser.o repr.o extra/vector.o codegen.o symboltable.o err.o sym_hashtable.o
 	$(CC) $(CFLAGS) $^ -o $(BIN)
 
 %.o: %.c Makefile

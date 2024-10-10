@@ -62,7 +62,7 @@ typedef struct {
 // statement sequence = scope
 typedef struct {
     AstNodeList statements;
-    bool root;
+    bool root; // global scope
 } Block;
 
 /* ---- */

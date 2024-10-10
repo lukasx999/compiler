@@ -6,9 +6,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-
-
-typedef char vec_Blob; // pointer arithmetic on voidptrs is undefined => increment by 1 byte via char
+typedef char vec_blob_t; // pointer arithmetic on voidptrs is undefined => increment by 1 byte via char
 
 typedef struct {
     size_t capacity,
@@ -16,7 +14,7 @@ typedef struct {
            element_size,
            growth_rate;
 
-    vec_Blob *blob; // using char* instead of void* for pointer arith
+    vec_blob_t *blob; // using char* instead of void* for pointer arith
 
 } vec_Vector;
 
@@ -29,6 +27,7 @@ extern void  vec_insert_before (vec_Vector *v, size_t index, void *value);
 extern void  vec_insert_after  (vec_Vector *v, size_t index, void *value);
 extern void* vec_pop           (vec_Vector *v);
 extern void  vec_extend        (vec_Vector *this, vec_Vector *other); // merge `other` into `this`
+extern void  vec_destroy       (vec_Vector *v);
 
 
 

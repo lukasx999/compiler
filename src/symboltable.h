@@ -5,14 +5,13 @@
 #include "parser.h"
 
 
+
 typedef struct {
     Token    identifier,
              datatype;
     uint64_t scope_level,
              rbp_offset;
 } SymbolTableEntry;
-
-typedef vec_Vector SymbolTable; // list of entries
 
 /*  TODO:
  *

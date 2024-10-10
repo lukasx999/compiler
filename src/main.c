@@ -85,11 +85,25 @@ char* read_file(const char *filename) {
 char* read_file(const char *filename) {
 
     int fd = open(filename, 0);
+
+    if (fd == -1) {
+        perror("Failed to read source file");
+        exit(1);
+    }
+
     struct stat buf;
     fstat(fd, &buf);
-    return mmap(NULL, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0); // mmap is based!
+    char *data = mmap(NULL, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0); // based mmap!
+
+    if (data == MAP_FAILED) {
+        perror("Failed to load source file");
+        exit(1);
+    }
+
+    return data;
 
 }
+
 #endif
 
 
@@ -103,6 +117,7 @@ void run_from_file(const char *filename) {
     // print_tokens_columns(tokens);
 
     AstNode *root = parse(tokens, source, filename);
+    vec_destroy(&tokens);
     print_ast(root);
 
     construct_symboltable(root);
@@ -121,7 +136,6 @@ int main(int argc, char **argv) {
     else if (argc == 2) {
         char *filename = argv[1];
         run_from_file(filename);
-        exit(0);
 
     // DEV
     } else {
