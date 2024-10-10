@@ -1,5 +1,5 @@
 # TODO
-- [ ] **should idtypepair really be an astnode?** (make it a helper function)
+- [ ] refactor parser macros into real functions
 
 - [ ] shell cmd interpolation
 - [ ] nvim bufferline
@@ -16,6 +16,7 @@
 - [ ] arrays (let foo'int\[5\];)
 - [ ] object access (object:method(), object:member)
 - [ ] else if
+- [x] **should idtypepair really be an astnode?** (make it a helper function)
 - [x] function calls
 - [x] **add keyword tokens to every astnode**
 - [x] make assignment an expression

@@ -15,6 +15,17 @@
 typedef struct AstNode AstNode;
 typedef vec_Vector AstNodeList;
 
+
+/* UTIL */
+
+// stores an identifier and a datatype as a pair
+// useful for list of functin parameters
+typedef struct {
+    Token identifier, type;
+} IdTypePair;
+
+
+
 /* -- EXPRESSIONS -- */
 
 typedef struct {
@@ -48,27 +59,12 @@ typedef struct {
 } ExprCall;
 
 
-/* -- ----------- -- */
-
 /* -- STATEMENTS -- */
 
-/* UTIL */
-
-// stores an identifier and a datatype as a pair
 typedef struct {
-    Token identifier, type;
-} IdTypePair;
-
-
-// statement sequence = scope
-typedef struct {
-    AstNodeList statements;
+    AstNodeList statements; // statement sequence = scope
     bool root; // global scope
 } Block;
-
-/* ---- */
-
-/* -- STATEMENTS -- */
 
 typedef struct {
     IdTypePair idtypepair;
