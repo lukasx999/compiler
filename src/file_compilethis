@@ -1,8 +1,14 @@
 
+let mut global'int = 1;
+let mut global1'int = 1;
+let mut global2'int = 1;
 
+defun foo(foo_p1'int, foo_p2'int) -> void {
+    let foo'int = 2;
+    let foo_1'int = 2;
+    let foo_2'int = 2;
+}
 
-defun main(argc'int, args'str) -> void {
-    let mut foo'fjlks = 45;
-    let mut bar'int = 45;
-    let mut baz'int = 45;
+defun bar() -> void {
+    let bar'int = 3;
 }

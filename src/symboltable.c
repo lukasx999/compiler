@@ -1,10 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
 #include "symboltable.h"
 #include "sym_hashtable.h"
 
 
+
+static KVPair
+get_pair_idtypepair(IdTypePair *pair) {
+
+
+    SymbolTableEntry entry = {
+        .identifier  = pair->identifier,
+        .rbp_offset  = 0,
+        .scope_level = 0,
+        .datatype    = pair->type
+    };
+
+    ht_Key_t key = { .scope_level = entry.scope_level };
+    strcpy(key.identifier, entry.identifier.value);
+
+    KVPair data = { .value = entry, .key = key };
+    return data;
+
+}
+
+
 static void
 traverse_ast(AstNode *root, vec_Vector *tables, HashTable *current) {
+
+    assert(!((current == NULL) && !(root->type == TYPE_BLOCK))); // sanity check - if current is NULL, node must be a block (we dont want to segfault)
 
     switch (root->type) {
 
@@ -15,64 +43,47 @@ traverse_ast(AstNode *root, vec_Vector *tables, HashTable *current) {
 
             traverse_ast(root->ast_function.body, tables, &new);
 
-            vec_push(tables, &new);
 
-            #if 0
-            size_t size = root->ast_function.parameters.size;
-            for (size_t i = 0; i < size; ++i) {
-                AstNode *node = (AstNode*) vec_get(&root->ast_function.parameters, i);
-                traverse_ast(node);
+            vec_Vector *params = &root->ast_function.parameters;
+            for (size_t i = 0; i < params->size; ++i) {
+                IdTypePair pair = *(IdTypePair*) vec_get(params, i);
+                KVPair kv = get_pair_idtypepair(&pair);
+                ht_insert(&new, kv);
             }
-            #endif
 
-
+            vec_push(tables, &new);
 
         } break;
 
         case TYPE_BLOCK: {
 
+            vec_Vector *v = &root->ast_block.statements;
+
             if (root->ast_block.root) {
                 HashTable new;
                 ht_init(&new, 50, 25, 2);
 
-                vec_Vector *v = &root->ast_block.statements;
-                for (size_t i = 0; i < v->size; ++i) {
+                for (size_t i = 0; i < v->size; ++i)
                     traverse_ast((AstNode*)vec_get(v, i), tables, &new);
-                }
 
                 vec_push(tables, &new);
                 break;
-
             }
 
-            vec_Vector *v = &root->ast_block.statements;
-            for (size_t i = 0; i < v->size; ++i) {
+            for (size_t i = 0; i < v->size; ++i)
                 traverse_ast((AstNode*)vec_get(v, i), tables, current);
-            }
 
 
         } break;
 
         case TYPE_VARDECLARATION: {
-
-            #if 0
-            SymbolTableEntry entry = {
-                .identifier  = root->ast_vardecl.idtypepair->ast_idtypepair.identifier,
-                .rbp_offset  = 0,
-                .scope_level = 0,
-                .datatype    = root->ast_vardecl.idtypepair->ast_idtypepair.type
-            };
-
-            KVPair data = { .value = entry, .key = (ht_Key_t){ .identifier = entry.identifier.value, .scope_level = entry.scope_level } };
-            ht_insert(current, data);
-
-            #endif
+            KVPair kv = get_pair_idtypepair(&root->ast_vardecl.idtypepair);
+            ht_insert(current, kv);
         } break;
 
         // function parameters
         case TYPE_IDTYPEPAIR: {
         } break;
-
 
 
         default: break;
@@ -91,11 +102,30 @@ construct_symboltable(AstNode *root) {
     traverse_ast(root, &tables, NULL);
 
 
-    // puts("::");
-    // for (size_t i = 0; i < tables.size; ++i) {
-    //     ht_print((HashTable*)vec_get(&tables, i));
-    //     puts("::");
-    // }
+    #if 0
+    HashTable t;
+    ht_init(&t, sizeof(HashTable), 5, 2);
+
+    SymbolTableEntry entry = { .identifier = (Token){.value = "foo"} };
+    ht_Key_t key = { .identifier = "foo", .scope_level = 0 };
+    KVPair kv = { .value = entry, .key = key };
+    ht_insert(&t, kv);
+
+    entry = (SymbolTableEntry){ .identifier = (Token){.value = "bar"} };
+    key = (ht_Key_t){ .identifier = "bar", .scope_level = 0 };
+    kv = (KVPair){ .value = entry, .key = key };
+    ht_insert(&t, kv);
+
+    ht_print(&t);
+    #endif
+
+
+
+    puts("===");
+    for (size_t i = 0; i < tables.size; ++i) {
+        ht_print((HashTable*)vec_get(&tables, i));
+        puts("===");
+    }
 
 
 }

@@ -19,7 +19,7 @@ typedef vec_Vector AstNodeList;
 /* UTIL */
 
 // stores an identifier and a datatype as a pair
-// useful for list of functin parameters
+// useful for list of function parameters
 typedef struct {
     Token identifier, type;
 } IdTypePair;
@@ -75,7 +75,7 @@ typedef struct {
 
 typedef struct {
     Token identifier, returntype, keyword;
-    vec_Vector parameters;
+    vec_Vector parameters; // vector of [idtypepair]
     AstNode *body; // [block] | NULL = declaration
 } StmtFunction;
 

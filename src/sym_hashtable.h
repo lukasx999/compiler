@@ -7,7 +7,7 @@
 #include "symboltable.h"
 
 typedef struct {
-    char *identifier;
+    char identifier[BUFSIZE];
     uint64_t scope_level;
 } ht_Key_t;
 

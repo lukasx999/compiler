@@ -61,6 +61,7 @@ ht_get(HashTable *ht, Key_t key) {
             assert((node != NULL) && "key not found");
         }
 
+
     return node->data.value;
 }
 
@@ -148,10 +149,14 @@ ht_insert(HashTable *ht, KVPair data) {
 
 
 
-void ht_print(HashTable *ht) {
+void
+ht_print(HashTable *ht) {
     for (size_t i = 0; i < ht->capacity; ++i) {
         if (ht->buckets[i] == NULL) continue;
-        printf("%lu: %s(%lu)", i, ht->buckets[i]->data.key.identifier, ht->buckets[i]->data.value.rbp_offset);
+
+        printf("%lu: %s(%lu)", i,
+               ht->buckets[i]->data.key.identifier,
+               ht->buckets[i]->data.value.rbp_offset);
 
         if (ht->buckets[i]->next == NULL) { puts(""); continue; }
         Node *current = ht->buckets[i]->next;
@@ -174,6 +179,7 @@ ht_destroy(HashTable *ht) {
         while (current != NULL) {
             Node *old = current;
             current = current->next;
+            free(old); printf("free'd\n");
         }
     }
 
