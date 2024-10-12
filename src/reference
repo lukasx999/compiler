@@ -89,6 +89,12 @@ loop {
 }
 
 
+# Goto's
+
+tag foo;  # Declare label
+jump foo; # Jump to label
+
+
 
 # Functions
 

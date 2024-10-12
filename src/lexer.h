@@ -46,19 +46,18 @@
 typedef const char * const keyword_t;
 
 static keyword_t
-KEYWORD_LET     = "let",
-KEYWORD_MUT     = "mut",
-KEYWORD_DEFUN   = "defun",
-KEYWORD_RETURN  = "ret",
-KEYWORD_ECHO    = "echo",
-KEYWORD_LOOP    = "loop",
-KEYWORD_ESCAPE  = "escape",
-KEYWORD_IF      = "if",
-KEYWORD_ELSEIF  = "elsif",
-KEYWORD_ELSE    = "else";
+KEYWORD_LET       = "let",
+KEYWORD_MUT       = "mut",
+KEYWORD_DEFUN     = "defun",
+KEYWORD_RETURN    = "ret",
+KEYWORD_ECHO      = "echo",
+KEYWORD_LOOP      = "loop",
+KEYWORD_ESCAPE    = "escape",
+KEYWORD_IF        = "if",
+KEYWORD_ELSEIF    = "elsif",
+KEYWORD_ELSE      = "else",
 
 // these are actually literals, but we'll treat them as keywords
-static keyword_t
 LITERAL_TRUE      = "true",
 LITERAL_FALSE     = "false",
 LITERAL_NIL       = "nil",
@@ -96,23 +95,10 @@ static keyword_t keywords[] = {
 // UNR ... Unary
 // BIN ... Binary
 enum TokenType {
-
-    /*
-    TODO: future tokens
-    inject
-    define
-    set
-    let
-    tag / goto
-    destroy
-    */
-
-    // TODO: modulus operator %
-
     // do not set anything to `-1` as this is the value of `MATCH_SENTINEL`
 
     // ETC
-    TOK_EOF,
+    TOK_EOF = 0,
     TOK_INVALID,
 
     // SINGLE CHAR TOKENS

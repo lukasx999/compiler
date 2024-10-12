@@ -8,7 +8,7 @@
 - [ ] tests
 - [ ] free astnodes
 - [ ] preprocessor for macros and removing comments
-- [ ] xor operator: )(
+- [ ] xor operator: )( | mod operator: %
 - [ ] implicit tokens?
 - [ ] implicit void returntype (defun foo() {})
 - [ ] seperate ast node for logical operators?

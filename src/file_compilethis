@@ -1,5 +1,7 @@
 
-defun main(argc'int, args'str) -> fjskl {
+
+
+defun main(argc'int, args'str) -> void {
     let mut foo'fjlks = 45;
     let mut bar'int = 45;
     let mut baz'int = 45;

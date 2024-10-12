@@ -15,6 +15,8 @@ syntax match Keyword /container/
 syntax match Keyword /create/
 syntax match Keyword /demolish/
 syntax match Keyword /echo/
+syntax match Keyword /tag/
+syntax match Keyword /jump/
 
 syntax match Type /int/
 syntax match Type /str/
