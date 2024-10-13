@@ -10,8 +10,7 @@
 
 
 static KVPair
-get_pair_idtypepair(IdTypePair *pair) {
-
+get_kvpair_idtypepair(IdTypePair *pair) {
 
     SymbolTableEntry entry = {
         .identifier  = pair->identifier,
@@ -47,7 +46,7 @@ traverse_ast(AstNode *root, vec_Vector *tables, HashTable *current) {
             vec_Vector *params = &root->ast_function.parameters;
             for (size_t i = 0; i < params->size; ++i) {
                 IdTypePair pair = *(IdTypePair*) vec_get(params, i);
-                KVPair kv = get_pair_idtypepair(&pair);
+                KVPair kv = get_kvpair_idtypepair(&pair);
                 ht_insert(&new, kv);
             }
 
@@ -77,7 +76,7 @@ traverse_ast(AstNode *root, vec_Vector *tables, HashTable *current) {
         } break;
 
         case TYPE_VARDECLARATION: {
-            KVPair kv = get_pair_idtypepair(&root->ast_vardecl.idtypepair);
+            KVPair kv = get_kvpair_idtypepair(&root->ast_vardecl.idtypepair);
             ht_insert(current, kv);
         } break;
 
