@@ -1,5 +1,6 @@
 # TODO
 - [ ] refactor parser macros into real functions
+- [ ] :InspectTree
 
 - [ ] shell cmd interpolation
 - [ ] nvim bufferline
