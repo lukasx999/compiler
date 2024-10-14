@@ -29,7 +29,7 @@ ht_hash(HashTable *ht, Key_t key) {
     for (size_t i = 0; i < strlen(key.identifier); ++i)
         sum += key.identifier[i] * i;
 
-    sum *= key.scope_level || 1;
+    sum *= key.scope_level+1; // no collisions on scope level 0
 
     return sum % ht->capacity;
 
