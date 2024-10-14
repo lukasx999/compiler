@@ -73,6 +73,7 @@ void _rec_compile(AstNode *root, Sections *sections) {
 
             char *buf = malloc(BUFSIZE_BIG * sizeof(char));
             sprintf(buf, "%s:\n", root->ast_function.identifier.value);
+            // TODO: maybe use strcat?
             append_string(&sections->text, buf);
 
 

@@ -6,11 +6,15 @@
 
 
 
+
+
+
+
 typedef struct {
-    Token    identifier,
-             datatype;
+    Token   identifier,
+            datatype;
     uint64_t scope_level,
-             rbp_offset;
+            rbp_offset;
 } SymbolTableEntry;
 
 /*  TODO:
