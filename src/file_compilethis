@@ -1,10 +1,11 @@
+defun foo() -> void {
+}
 
-let foo'int;
-let bar'int;
-let baz'int;
+defun bar() -> void {
+}
+
+defun baz() -> void {
+}
 
 defun main() -> void {
-    let inner1'int;
-    let inner2'int;
-    let inner3'int;
 }
