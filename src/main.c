@@ -121,10 +121,13 @@ void run_from_file(const char *filename) {
     print_ast(root);
 
     construct_symboltable(root);
-    // compile(root);
+    compile(root);
 
 }
 
+void print_usage(void) {
+    fputs("usage: ./compiler <file>", stderr);
+}
 
 int main(int argc, char **argv) {
 
@@ -140,6 +143,8 @@ int main(int argc, char **argv) {
     // DEV
     } else {
 
+        print_usage();
+        #if 0
         const char *input = "defun main() -> int {}";
         print_input(input);
 
@@ -148,6 +153,7 @@ int main(int argc, char **argv) {
 
         AstNode *root = parse(tokens, (char*)input, "");
         print_ast(root);
+        #endif
 
     }
 

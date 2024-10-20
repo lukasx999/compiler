@@ -52,7 +52,8 @@ get_kvpair_idtypepair(IdTypePair *pair, uint64_t scope_level, uint64_t rbp_offse
 
 
 static void
-traverse_ast(AstNode *root, vec_Vector *tables, HashTable *current, uint64_t scope_level, uint64_t *baseptr_offset) {
+traverse_ast(AstNode   *root,    vec_Vector *tables,
+             HashTable *current, uint64_t scope_level, uint64_t  *baseptr_offset) {
 
     assert(!((current == NULL) && !(root->type == TYPE_BLOCK))); // sanity check - if current is NULL, node must be a block (we dont want to segfault)
 
