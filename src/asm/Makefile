@@ -1,5 +1,5 @@
 
-strings: strings.asm
+strings: addition.asm
 	nasm $^ -felf64 -o strings.o -g -F dwarf
 	cc strings.o -no-pie -ggdb -O0 -o out
 	./out

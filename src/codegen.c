@@ -30,6 +30,41 @@ append_string(vec_Vector *v, const char *string) {
 void _rec_compile(AstNode *root, Sections *sections) {
 
     switch (root->type) {
+
+        case TYPE_BINARYOP: {
+            enum TokenType type = root->ast_binaryop.operator.type;
+
+            switch (type) {
+                case TOK_BIN_PLUS: {
+                    append_string(&sections->text, "\tadd rax, ");
+                } break;
+                case TOK_BIN_UNR_MINUS: {
+                    append_string(&sections->text, "\tsub rax, ");
+                } break;
+                case TOK_BIN_ASTERISK: {
+                    append_string(&sections->text, "\timul rax, ");
+                } break;
+                case TOK_BIN_UNR_SLASH: { // TODO: this
+                    append_string(&sections->text, "\tdiv rax, ");
+                } break;
+                default: break;
+            }
+
+            _rec_compile(root->ast_binaryop.left_node,  sections);
+            _rec_compile(root->ast_binaryop.right_node, sections);
+
+        } break;
+
+
+        case TYPE_LITERAL: {
+            char *value         = root->ast_literal.operator.value;
+            enum TokenType type = root->ast_literal.operator.type;
+
+            INTERPOLATE(&sections->text, " %s\n", value);
+
+        } break;
+
+
         case TYPE_FUNCTION: {
             append_string(&sections->text, "\n;--- function ---\n");
 

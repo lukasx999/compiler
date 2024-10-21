@@ -8,4 +8,5 @@ defun baz() -> void {
 }
 
 defun main() -> void {
+    1+2+3;
 }
