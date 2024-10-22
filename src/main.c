@@ -120,8 +120,8 @@ void run_from_file(const char *filename) {
     vec_destroy(&tokens);
     print_ast(root);
 
-    construct_symboltable(root);
-    compile(root);
+    // construct_symboltable(root);
+    // compile(root);
 
 }
 

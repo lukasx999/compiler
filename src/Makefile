@@ -7,7 +7,7 @@ CFLAGS     = -Wall -Wextra -std=c17 -pedantic -ggdb -O0 $(EXTRAFLAGS) -I./extra
 BIN        = compiler
 TEST       = test
 
-all: $(BIN) grammar.txt
+all: $(BIN) grammar.txt test
 
 grammar.txt: getgrammar.py parser.c
 	$(PYTHON) $<
