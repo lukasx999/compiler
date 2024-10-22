@@ -1,6 +1,7 @@
 # TODO
 - [ ] refactor parser macros into real functions
 - [ ] :InspectTree
+- [ ] add `global` keyword for exporting functions
 
 - [ ] shell cmd interpolation
 - [ ] nvim bufferline

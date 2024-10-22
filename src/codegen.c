@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <assert.h>
 #include <stddef.h>
+#include <stdarg.h>
 
 #include "codegen.h"
 
@@ -17,13 +18,23 @@ static void
 append_string(vec_Vector *v, const char *string) {
     for (size_t i = 0; i < strlen(string); ++i)
         vec_push(v, (void*)&string[i]);
+
 }
 
-#define INTERPOLATE(vector, fmt, ...) { \
-    char buf[BUFSIZE_BIG] = { 0 }; \
-    sprintf(buf, fmt, __VA_ARGS__); \
-    append_string(vector, buf); \
-} assert(true)
+
+static void
+interpolate_string(vec_Vector *v, const char *fmt, ...) {
+    va_list va;
+    va_start(va, fmt);
+
+    char buf[BUFSIZE_BIG] = { 0 };
+    vsnprintf(buf, BUFSIZE_BIG, fmt, va);
+    append_string(v, buf); \
+
+    va_end(va);
+}
+
+
 
 
 
@@ -60,7 +71,7 @@ void _rec_compile(AstNode *root, Sections *sections) {
             char *value         = root->ast_literal.operator.value;
             enum TokenType type = root->ast_literal.operator.type;
 
-            INTERPOLATE(&sections->text, " %s\n", value);
+            interpolate_string(&sections->text, " %s\n", value);
 
         } break;
 
@@ -68,26 +79,20 @@ void _rec_compile(AstNode *root, Sections *sections) {
         case TYPE_FUNCTION: {
             append_string(&sections->text, "\n;--- function ---\n");
 
-            // TODO: add `global` keyword
             if (!strcmp(root->ast_function.identifier.value, "main"))
                 append_string(&sections->text, "global main\n");
 
-            // char buf[BUFSIZE_BIG] = { 0 };
-            // sprintf(buf, "%s:\n", root->ast_function.identifier.value);
-            // append_string(&sections->text, buf);
-            INTERPOLATE(&sections->text, "%s:\n", root->ast_function.identifier.value);
+            interpolate_string(&sections->text, "%s:\n", root->ast_function.identifier.value);
 
-            append_string(&sections->text,
-                          "\tpush rbp\n"
-                          "\tmov rbp, rsp\n");
+            append_string(&sections->text, "\tpush rbp\n"
+                                           "\tmov rbp, rsp\n");
 
             // etc...
             _rec_compile(root->ast_function.body, sections);
 
-            append_string(&sections->text,
-                          "\tpop rbp\n"
-                          "\tret\n"
-                          ";--- end ---\n");
+            append_string(&sections->text, "\tpop rbp\n"
+                                           "\tret\n"
+                                           ";--- end ---\n");
 
         } break;
 

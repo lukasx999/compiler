@@ -29,9 +29,6 @@ global main
 main:
 	push rbp
 	mov rbp, rsp
-	add rax, 	add rax,  1
- 2
- 3
 	pop rbp
 	ret
 ;--- end ---
